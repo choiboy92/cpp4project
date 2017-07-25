@@ -7,7 +7,7 @@ function jsViewHKL()  {
 jsViewHKL.prototype.Init = function ()  {
 // general initialisation function
 
-  this.method = 'POST';
+//  this.method = 'POST';
 
 //  alert ( 'init called  method=' + this.method );
 
@@ -57,6 +57,7 @@ $.ajaxTransport("+binary", function(options, originalOptions, jqXHR){
 });
 */
 
+
 jsViewHKL.prototype.Load = function ( url_str )  {
 
 //  alert ( 'load called, url_str=' + url_str + ', method=' + this.method );
@@ -84,10 +85,10 @@ $.ajax({
       url     : url_str,
       async   : true,
       type    : t.method,
-  //    headers : {'Content-Type':'application/octet-stream','X-Requested-With':'XMLHttpRequest'},
-  //    contentType: 'application/octet-stream',
+//      headers : {'Content-Type':'application/octet-stream','X-Requested-With':'XMLHttpRequest'},
+//      contentType: 'application/octet-stream',
   //    contentType: false,
-  //    processData: false,
+      processData: false,
       dataType: 'text'
     })
     .done   ( function(data){
@@ -108,7 +109,7 @@ $.ajax({
 
 
 jsViewHKL.prototype.processData = function ( data )  {
-  var n = data.indexOf ( 'TITLE' );
+  var n = data.indexOf ( 'VERS MTZ:' );
   alert ( 'data len=' + data.length + ', ' + data.substr(n)  );
   var summary = this.parse ( data.substr(n) )
   alert ( 'summary = ' + JSON.stringify(summary) );
