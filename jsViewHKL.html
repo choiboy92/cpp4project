@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="pragma"  content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <title>jsViewHKL</title>
+  </head>
+
+
+  <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.structure.min.css"/>
+  <link rel="stylesheet" type="text/css" href="js-lib/query-ui.theme.min.css"/>
+
+  <script src="js-lib/jquery-1.12.4.min.js"></script>
+  <script src="js-lib/jquery-ui.min.js"></script>
+
+  <script src="jsViewHKL.js"></script>
+
+<body>
+
+  <div id='scene' style="width:100%;"></div>
+
+  <script>
+    $(document).ready(function()  {
+
+      $(function() {
+        $( document ).tooltip();
+      });
+
+      var viewhkl = new jsViewHKL();
+
+      viewhkl.Init();
+      viewhkl.Load ( 'data/rnase.mtz' );
+
+
+    });
+  </script>
+
+</body>
+
+</html>
