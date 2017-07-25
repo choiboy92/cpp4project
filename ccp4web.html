@@ -1,0 +1,146 @@
+<html>
+<head>
+	<style>
+        h1
+		{
+			font-family: Arial;
+		}
+		
+		div {
+            padding:10px;
+            width:600px;
+            background:#fff;
+        }
+
+        .tabs li {
+            list-style:none;
+            display:inline;
+        }
+
+        .tabs a {
+            padding:10px 20px;
+            display:inline-block;
+            background:#0000ff;
+            color:#fff;
+            text-decoration:none;
+			font-family: Arial;
+        }
+
+        .tabs a.active {
+            background:#fff;
+            color:#000;
+        }
+    </style>
+    <h1>
+        CCP4 online visualiser TEST VERSION
+    </h1>
+    <!--call upon the jquery CDN from Google-->
+    <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+	<!--D3 link -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<!--source code for ajax + jquery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="d3.v4.min.js"></script>
+	
+	<p>
+		Please select file to be put into table format
+		<br>
+    </p>
+	
+	<input type="file" id="mtz_file">
+    <!-- after clicking, this where I should try and implement a dynamic table-->
+	<button type="button">Press to begin uploading</button>
+	
+	<script language="javascript" type="text/javascript">
+    $(document).ready(function()
+	{
+		$("button").click(function()
+		{
+			$("#tab1").load("mtzmock.txt", function(responseTxt, statusTxt, xhr)
+			{
+				if(statusTxt == "success")
+					alert("File loaded successfully!");
+				if(statusTxt == "error")
+					alert("Error: " + xhr.status + ": " + xhr.statusText);
+			});
+		});
+	});	
+    </script>	
+	
+	
+	<!--Jquery function for tabs-->
+    <script>
+        $(document).ready(function()
+        {
+            $('ul.tabs').each(function ()
+            {
+                var $active, $content, $links = $(this).find('a');
+                $active = $($links.filter('[href="'+location.hash+'"]')[0] || $links[0]);
+                $active.addClass('active');
+
+                $content = $($active[0].hash);
+
+                // Hide others
+                $links.not($active).each(function ()
+                {
+                    $(this.hash).hide();
+                });
+
+                // Bind the click event handler
+                $(this).on('click', 'a', function(e)
+                {
+                    // Make the old tab inactive.
+                    $active.removeClass('active');
+                    $content.hide();
+
+                    // Update the variables with the new link and content
+                    $active = $(this);
+                    $content = $(this.hash);
+
+                    // Make  tab active.
+                    $active.addClass('active');
+                    $content.show();
+
+                    e.preventDefault();
+                });
+
+            })
+        })
+    </script>
+</head>
+<body>
+        <ul class ='tabs'>
+            <li><a href="#tab1">Tab 1</a></li>
+            <li><a href="#tab2">Tab 2</a></li>
+            <li><a href="#tab3">Tab 3</a></li>
+        </ul>
+        <div id="tab1">
+            <!-- Things that go inside tab 1-->
+            <h1>
+                SECTION 1
+            </h1>
+            <p>
+                This is the text for tab 1
+            </p>
+        </div>
+        <div id="tab2">
+            <h1>
+                SECTION 2
+            </h1>
+            <!-- Things that go inside tab 2-->
+            <p>
+                This is the text for tab 2
+            </p>
+        </div>
+        <div id="tab3">
+            <h1>
+                SECTION 3
+            </h1>
+            <!-- Things that go inside tab 3-->
+            <p>
+                This is the text for tab 3
+            </p>
+        </div>
+
+</body>
+</html>
