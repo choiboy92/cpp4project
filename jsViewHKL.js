@@ -2,121 +2,102 @@
 
 function jsViewHKL()  {
   this.method = 'GET';
+  this.endian = false;
 }
 
 jsViewHKL.prototype.Init = function ()  {
 // general initialisation function
-
-
-//  this.method = 'POST';
-
-//  alert ( 'init called  method=' + this.method );
-
+  this.method = 'POST';
 }
-
-//function to make tabs
-
-/*
-$.ajaxTransport("+binary", function(options, originalOptions, jqXHR){
-    // check for conditions and support for blob / arraybuffer response type
-    if (window.FormData && ((options.dataType && (options.dataType == 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob)))))
-    {
-        return {
-            // create new XMLHttpRequest
-            send: function(headers, callback){
-		// setup all variables
-                var xhr = new XMLHttpRequest(),
-		url = options.url,
-		type = options.type,
-		async = options.async || true,
-		// blob or arraybuffer. Default is blob
-		dataType = options.responseType || "blob",
-		data = options.data || null,
-		username = options.username || null,
-		password = options.password || null;
-
-                xhr.addEventListener('load', function(){
-			var data = {};
-			data[options.dataType] = xhr.response;
-			// make callback and send data
-			callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
-                });
-
-                xhr.open(type, url, async, username, password);
-
-		// setup custom headers
-		for (var i in headers ) {
-			xhr.setRequestHeader(i, headers[i] );
-		}
-
-                xhr.responseType = dataType;
-                xhr.send(data);
-            },
-            abort: function(){
-                jqXHR.abort();
-            }
-        };
-    }
-});
-*/
 
 
 jsViewHKL.prototype.Load = function ( url_str )  {
-
-//  alert ( 'load called, url_str=' + url_str + ', method=' + this.method );
-
-
-
-//    http://www.henryalgus.com/reading-binary-files-using-jquery-ajax/
-//    http://www.ccp4.ac.uk/html/mtzformat.html
-
-/*
-$.ajax({
-          url: "image.png",
-          type: "GET",
-          dataType: 'binary',
-          headers:{'Content-Type':'image/png','X-Requested-With':'XMLHttpRequest'},
-          processData: false,
-          success: function(result){
-          }
-});
-*/
+  var oReq = new XMLHttpRequest();
+  oReq.open ( this.method, url_str, true );
+  oReq.responseType = "arraybuffer";
+  oReq.timeout      = 9999999;
 
   (function(t){
 
-    $.ajax ({
-      url     : url_str,
-      async   : true,
-      type    : t.method,
-//      headers : {'Content-Type':'application/octet-stream','X-Requested-With':'XMLHttpRequest'},
-//      contentType: 'application/octet-stream',
-  //    contentType: false,
-      processData: false,
-      dataType: 'text'
-    })
-    .done   ( function(data){
-      t.processData ( data );
-    })
-    .always ( function(){
-  //    alert ( 'always' );
-    })
-    .fail   ( function(){
-      alert ( 'error' );
-    });
+    function getHeaderOffset ( dataView,dataLength )  {
+      var offset = 4*dataView.getUint32(4,t.endian) - 4;
+      if ((offset>0) && (offset<dataLength))  {
+        var spattern = 'VERS MTZ:';
+        var matched  = true;
+        for (var i=0;(i<spattern.length) && matched;i++)
+          matched = spattern.codePointAt(i) == dataView.getUint8(offset+i);
+        if (matched)  return offset;
+                else  return -2;
+      } else {
+        return -1;
+      }
+    }
+
+    oReq.onload = function(oEvent) {
+
+      var arrayBuffer = oReq.response; // Note: not oReq.responseText
+      if (arrayBuffer) {
+
+        var dataView = new DataView(arrayBuffer);
+        var hoffset  = getHeaderOffset ( dataView,arrayBuffer.byteLength );
+        if (hoffset<0)  {
+          t.endian = !t.endian;
+          hoffset = getHeaderOffset ( dataView,arrayBuffer.byteLength );
+        }
+
+        if (hoffset<0)  {
+          alert ( 'MTZ Header Offset could not been calculated. Corrupt file?' );
+        } else  {
+
+          var header = [];  // will be a list of 80-character strings
+          for (var i=hoffset;i<arrayBuffer.byteLength;i+=80)  {
+            var s = "";
+            var imax = Math.min(i+80,arrayBuffer.byteLength);
+            for (var j=i;j<imax;j++)
+              s += String.fromCharCode ( dataView.getUint8(j) );
+            header.push ( s );
+          }
+
+          var reflections = new DataView ( arrayBuffer,80,hoffset-80 );
+          t.processData ( header,reflections );
+
+        }
+
+      } else {
+        alert ( 'did not work!' );
+      }
+
+    };
 
   }(this))
 
-  this.parse ( 'XXXXX' );
+  oReq.onerror = function()  {
+    alert ( 'Cannot obtain a file at ' + url_str );
+  }
+
+  oReq.send(null);
 
 }
 
 
-jsViewHKL.prototype.processData = function ( data )
-{
-  var n = data.indexOf ( 'VERS MTZ:' );
-  alert ( 'data len=' + data.length + ',   ' + data.substr(n)  );
-  var summary = this.parse ( data.substr(n) )
-  alert ( 'summary = ' + JSON.stringify(summary) );
+jsViewHKL.prototype.processData = function ( header,reflections )  {
+
+  alert ( 'header=' + header.join('\n') );
+
+  var S = "";
+  for (var i=0;i<22;i++)
+    S += reflections.getFloat32(i*4,this.endian) + ', ';
+  S += ' ***\n';
+  for (var i=22;i<44;i++)
+    S += reflections.getFloat32(i*4,this.endian) + ', ';
+
+  var n2 = reflections.byteLength/4;
+  var n1 = n2 - 22;
+  S += ' ###\n';
+  for (var i=n1;i<n2;i++)
+    S += reflections.getFloat32(i*4,this.endian) + ', ';
+
+  alert ( S );
 
 }
 
