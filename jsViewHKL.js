@@ -1,17 +1,23 @@
 
 
 function jsViewHKL()  {
-  this.method = 'GET';
-  this.endian = false;
+  this.method  = 'GET';
+  this.endian  = false;
+  this.sceneId = '';
 }
 
-jsViewHKL.prototype.Init = function ()  {
+jsViewHKL.prototype.Init = function ( sceneId )  {
 // general initialisation function
-  this.method = 'POST';
-}
 
+  this.method  = 'POST';
+  this.sceneId = sceneId;
+
+  this.makeLayout();
+
+}
 
 jsViewHKL.prototype.Load = function ( url_str )  {
+
   var oReq = new XMLHttpRequest();
   oReq.open ( this.method, url_str, true );
   oReq.responseType = "arraybuffer";
@@ -82,7 +88,9 @@ jsViewHKL.prototype.Load = function ( url_str )  {
 
 jsViewHKL.prototype.processData = function ( header,reflections )  {
 
-  alert ( 'header=' + header.join('\n') );
+  //alert ( 'header=\n' + header.join('\n') );
+
+
 
   var S = "";
   for (var i=0;i<22;i++)
@@ -97,7 +105,10 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   for (var i=n1;i<n2;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
 
-  alert ( S );
+  //alert ( S );
+
+
+
 
 }
 

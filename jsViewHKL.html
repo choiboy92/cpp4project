@@ -13,36 +13,115 @@
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.min.css"/>
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.structure.min.css"/>
   <link rel="stylesheet" type="text/css" href="js-lib/query-ui.theme.min.css"/>
+  <link rel="stylesheet" type="text/css" href="jsViewHKL.css"/>
+
   <script src="js-lib/jquery-1.12.4.min.js"></script>
   <script src="js-lib/jquery-ui.min.js"></script>
 
   <script src="jsViewHKL.js"></script>
+  <script src="layout.js"></script>
 
 <body>
-    <p id="test"></p>
-    <div id='scene' style="width:100%;"></div>
 
-    <script>
-    $(document).ready(function()    {
-        //Import the html file containg making tabs
-        $("#tabContent").load("jsViewHKLtabs.html");
-    })
-    </script>
-    <div id="tabContent"></div>
-    
-    <script>
+  <p>
+    <hr/>  <!--Horizontal line across page-->
+  </p>
+  <!--This is where i make my tabs
+  <ul class ="tabs">
+
+-->
+
+  <div id="tabs">
+    <ul>
+      <li><a href="#tabs-1">Summary</a></li>
+      <li><a href="#tabs-2">History</a></li>
+      <li><a href="#tabs-3">HKL List</a></li>
+      <li><a href="#tabs-4">HKL Zones</a></li>
+    </ul>
+    <div id="tabs-1">
+      <p><hr></p>
+      <h3>General data</h3>
+      <p>
+          Here a table will be placed</br>
+
+          Columns common to all datasets (should be collapsible)</br>
+
+          Dataset #n (should also be collapsible)</br>
+
+      </p>
+    </div>
+    <div id="tabs-2">
+    </div>
+    <div id="tabs-3">
+    </div>
+    <div id="tabs-4">
+      <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+      <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+    </div>
+  </div>
+
+  <!--
+  <ul id ="tabs">
+  <li><a href="#tab1">General</a></li>
+  <li><a href="#tab2">Summary</a></li>
+  <li><a href="#tab3">HKL List</a></li>
+  <li><a href="#tab4">HKL Zones</a></li>
+  </ul>
+  <div id="tab1" style="width:100%;">
+      <p><hr></p>
+      <h3>General data</h3>
+      <p>
+          Here a table will be placed</br>
+
+          Columns common to all datasets (should be collapsible)</br>
+
+          Dataset #n (should also be collapsible)</br>
+
+      </p>
+  </div>
+  <div id="tab2" style="width:100%;">
+      <h3>History</h3>
+      <p>
+          This is where history records of the file will go
+      </p>
+      <h3>Summary</h3>
+      <p>
+          Here another table containing summary data will be placed
+      </p>
+  </div>
+  <div id="tab3" style="width:100%;">
+      <h3>HKL List</h3>
+      <p>
+          This is the text for HKL List
+      </p>
+  </div>
+  <div id="tab4" style="width:100%;">
+      <h3>HKL Zones</h3>
+      <p>
+          Here the 3D implementations of the protein structure will be placed
+      </p>
+  </div>
+-->
+
+  <script>
+
     $(document).ready(function()  {
-        $(function() {
+
+      $( "#tabs" ).tabs();
+
+      $(function() {
         $( document ).tooltip();
       });
 
-
       var viewhkl = new jsViewHKL();
 
-      viewhkl.Init();
+      viewhkl.Init ( 'scene' );
       viewhkl.Load ( 'data/rnase.mtz' );
+
     });
+
   </script>
+
 </body>
 
 </html>
