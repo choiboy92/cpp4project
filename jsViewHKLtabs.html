@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+    div {
+        padding:10px;
+        width:600px;
+        background:#fff;
+    }
+
+    .tabs li {
+        list-style:none;
+        display:inline;
+    }
+
+    .tabs a {
+        padding:10px 20px;
+        display:inline-block;
+        background:#66cccc;
+        color:#fff;
+        text-decoration:none;
+        font-family: Arial;
+    }
+
+    .tabs a.active {
+        background:#fff;
+        color:#000;
+    }
+</style>
+<script>
+$(document).ready(function()
+{
+    $('ul.tabs').each(function ()
+    {
+        var $active, $content, $links = $(this).find('a');
+        $active = $($links.filter('[href="'+location.hash+'"]')[0] || $links[0]);
+        $active.addClass('active');
+
+        $content = $($active[0].hash);
+        // Hide others
+        $links.not($active).each(function ()
+        {
+            $(this.hash).hide();
+        });
+
+        // Bind the click event handler
+        $(this).on('click', 'a', function(e)
+        {
+            // Make the old tab inactive.
+            $active.removeClass('active');
+            $content.hide();
+
+            // Update the variables with the new link and content
+            $active = $(this);
+            $content = $(this.hash);
+
+            // Make  tab active.
+            $active.addClass('active');
+            $content.show();
+            e.preventDefault();
+        });
+    });
+});
+</script>
+</head>
+<body>
+    <p>
+        <!--Horizontal line across page-->
+    </p>
+    <!--This is where i make my tabs-->
+    <ul class ="tabs">
+    <li><a href="#tab1">General</a></li>
+    <li><a href="#tab2">Summary</a></li>
+    <li><a href="#tab3">HKL List</a></li>
+    <li><a href="#tab4">HKL Zones</a></li>
+    </ul>
+    <div id="tab1" style="width:100%;">
+        <!-- Things that go inside tab 1-->
+        <p><hr></p>
+        <h3>General data</h3>
+        <p>
+            Here a table will be placed</br>
+
+            Columns common to all datasets (should be collapsible)</br>
+
+            Dataset #n (should also be collapsible)</br>
+
+        </p>
+    </div>
+    <div id="tab2" style="width:100%;">
+        <h3>History</h3>
+        <!-- Things that go inside tab 2-->
+        <p>
+            This is where history records of the file will go
+        </p>
+        <h3>Summary</h3>
+        <p>
+            Here another table containing summary data will be placed
+        </p>
+    </div>
+    <div id="tab3" style="width:100%;">
+        <h3>HKL List</h3>
+        <!-- Things that go inside tab 3-->
+        <p>
+            This is the text for HKL List
+        </p>
+    </div>
+    <div id="tab4" style="width:100%;">
+        <h3>HKL Zones</h3>
+        <p>
+            Here the 3D implementations of the protein structure will be placed
+        </p>
+    </div>
+</body>
+</html>

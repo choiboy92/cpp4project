@@ -7,11 +7,14 @@ function jsViewHKL()  {
 jsViewHKL.prototype.Init = function ()  {
 // general initialisation function
 
+
 //  this.method = 'POST';
 
 //  alert ( 'init called  method=' + this.method );
 
 }
+
+//function to make tabs
 
 /*
 $.ajaxTransport("+binary", function(options, originalOptions, jqXHR){
@@ -108,9 +111,10 @@ $.ajax({
 }
 
 
-jsViewHKL.prototype.processData = function ( data )  {
+jsViewHKL.prototype.processData = function ( data )
+{
   var n = data.indexOf ( 'VERS MTZ:' );
-  alert ( 'data len=' + data.length + ', ' + data.substr(n)  );
+  alert ( 'data len=' + data.length + ',   ' + data.substr(n)  );
   var summary = this.parse ( data.substr(n) )
   alert ( 'summary = ' + JSON.stringify(summary) );
 

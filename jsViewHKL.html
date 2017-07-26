@@ -13,32 +13,36 @@
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.min.css"/>
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.structure.min.css"/>
   <link rel="stylesheet" type="text/css" href="js-lib/query-ui.theme.min.css"/>
-
   <script src="js-lib/jquery-1.12.4.min.js"></script>
   <script src="js-lib/jquery-ui.min.js"></script>
 
   <script src="jsViewHKL.js"></script>
 
 <body>
+    <p id="test"></p>
+    <div id='scene' style="width:100%;"></div>
 
-  <div id='scene' style="width:100%;"></div>
-
-  <script>
+    <script>
+    $(document).ready(function()    {
+        //Import the html file containg making tabs
+        $("#tabContent").load("jsViewHKLtabs.html");
+    })
+    </script>
+    <div id="tabContent"></div>
+    
+    <script>
     $(document).ready(function()  {
-
-      $(function() {
+        $(function() {
         $( document ).tooltip();
       });
+
 
       var viewhkl = new jsViewHKL();
 
       viewhkl.Init();
       viewhkl.Load ( 'data/rnase.mtz' );
-
-
     });
   </script>
-
 </body>
 
 </html>

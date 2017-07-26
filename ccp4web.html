@@ -5,16 +5,14 @@
 		{
 			font-family: Arial;
 		}
-		
+
 		div {
             padding:10px;
             width:600px;
             background:#fff;
         }
 
-		
-		
-		
+
         .tabs li {
             list-style:none;
             display:inline;
@@ -44,16 +42,16 @@
 	<!--source code for ajax + jquery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="d3.v4.min.js"></script>
-	
+
 	<p>
 		Please select file to be put into table format
 		<br>
     </p>
-	
+
 	<input type="file" id="mtz_file">
     <!-- after clicking, this where I should try and implement a dynamic table-->
 	<button type="button">Press to begin uploading</button>
-	
+
 	<script language="javascript" type="text/javascript">
     $(document).ready(function()
 	{
@@ -79,18 +77,18 @@
 			{
 				$(this.hash).hide();
 			});
-			
+
 			// Bind the click event handler
 			$(this).on('click', 'a', function(e)
 			{
 				// Make the old tab inactive.
 				$active.removeClass('active');
 				$content.hide();
-				
+
 				// Update the variables with the new link and content
 				$active = $(this);
 				$content = $(this.hash);
-				
+
 				// Make  tab active.
 				$active.addClass('active');
 				$content.show();
