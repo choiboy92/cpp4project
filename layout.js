@@ -1,16 +1,30 @@
 
-jsViewHKL.prototype.makeLayout = function()  {
+jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 // general initialisation function
+  //alert('URL_STR = ' = data_url_str);
+  //alert ( 'makeLayout');
+  //alert('cell = ' + cell);
 
-  //alert ( 'makeLaoyt');
-
-  var tab2 = document.getElementById ( "tabs-2" );
+  var tab1 = document.getElementById("tab1");
+  tab1.innerHTML ='<p><hr></p><h3>General data</h3>' +
+    '<table class="table-blue">'+
+    '<tr><td>Path</td><td>'+ data_url_str +'</td></tr>' +
+    '<tr><td>Type</td><td> Merged MTZ </td></tr>' +
+    '<tr><td>Space Group</td><td> Data for space group </td></tr>' +
+    '<tr><td>Space Group Confidence</td><td> Data for Space group confidence </td></tr>' +
+    '<tr><td>Cell</td><td>'+ this.cell +'</td></tr>' +
+    '<tr><td>Resolution Low</td><td> Data for Resolution low </td></tr>' +
+    '<tr><td>Resolution High</td><td> Data for Resolution High </td></tr>' +
+    '<tr><td>Number of Lattices</td><td> Data for Number of Lattices </td></tr>' +
+    '<tr><td>Number of Reflections</td><td> Data for Number of Reflections </td></tr>' +
+    '<tr><td>Number of Datasets</td><td>'+ this.ndif +'</td></tr> </table>';
+  var tab2 = document.getElementById ( "tab2" );
   tab2.innerHTML = '<h3>History</h3><p>' +
       'This is where history records of the file will go</p>' +
       '<h3>Summary</h3><p>' +
       'Here another table containing summary data will be placed</p>'
 
-  var tab3 = document.getElementById ( "tabs-3" );
+  var tab3 = document.getElementById ( "tab3" );
   var table = document.createElement ( 'table' );
   table.setAttribute ( 'id','table1' );
   table.setAttribute ( 'class','table-blue' );
@@ -25,7 +39,7 @@ jsViewHKL.prototype.makeLayout = function()  {
     row.appendChild ( cell );
   }
 
-  var tab4 = document.getElementById ( "tabs-4" );
+  var tab4 = document.getElementById ( "tab4" );
   tab4.innerHTML =
     '<table class="table-blue">' +
     ' <tr><th>Col1</th><th>Col2</th><th>COl3</th></tr>' +

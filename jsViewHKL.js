@@ -4,20 +4,24 @@ function jsViewHKL()  {
   this.method  = 'GET';
   this.endian  = false;
   this.sceneId = '';
+
 }
 
-jsViewHKL.prototype.Init = function ( sceneId )  {
+jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
 // general initialisation function
 
   this.method  = 'POST';
   this.sceneId = sceneId;
 
-  this.makeLayout();
-
+  // I moved this.makeLayout from the jsViewHKL.Init function
+  // and put it in the load so that variables dont have to be
+  // declared globally and it can be placed in the table
+  this.makeLayout(data_url_str, cell);
 }
 
 jsViewHKL.prototype.Load = function ( url_str )  {
 
+  //alert('URL_str = ' + url_str);
   var oReq = new XMLHttpRequest();
   oReq.open ( this.method, url_str, true );
   oReq.responseType = "arraybuffer";
@@ -67,6 +71,7 @@ jsViewHKL.prototype.Load = function ( url_str )  {
           var reflections = new DataView ( arrayBuffer,80,hoffset-80 );
           t.processData ( header,reflections );
 
+
         }
 
       } else {
@@ -88,8 +93,46 @@ jsViewHKL.prototype.Load = function ( url_str )  {
 
 jsViewHKL.prototype.processData = function ( header,reflections )  {
 
-  //alert ( 'header=\n' + header.join('\n') );
+  alert ( 'header=\n' + header.join('\n') );
 
+  this.symm = [];
+  this.column = [];
+  this.column_src = [];
+  this.dataset    = [];
+
+  for (var i=0;i<header.length;i++)
+  {
+      var hlist = header[i].split(" ");
+      var key   = hlist[0].toLowerCase();
+
+      if (key=='cell')
+      {
+
+          this.cell = hlist.slice(1).join(' ');
+
+      }
+      else if (key=='symm')
+      {
+          this.symm.push ( hlist.slice(1).join('\n').replace(/\s/g, '') );
+      }
+      else if (key=='ndif')
+      {
+          hlist = String(hlist);
+          this.ndif = parseInt(hlist);
+          alert (' hlist after slice = ' + this.ndif);
+
+          for (var j=0;j<this.ndif;j++)
+          {
+              this.dataset.push ( {} );
+          }
+      }
+      /*else if (key=='project')
+      {
+          var n = parseInt(hlist[1]);
+          this.dataset[i].project = hlist.slice(2).join(' ');
+      }*/
+
+  }
 
 
   var S = "";
@@ -109,28 +152,5 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
 
 
 
-
-}
-
-
-jsViewHKL.prototype.parse = function ( data )  {
-var summary = {};
-
-  summary.Type       = 'Merged MTZ';
-  summary.SpaceGroup = 'P 21 21 21';
-  summary.datasets   = [];
-
-  var dataset1 = {};
-  dataset1.A = 'A1';
-  dataset1.B = 'B1';
-
-  var dataset2 = {};
-  dataset2.A = 'A2';
-  dataset2.B = 'B2';
-
-  summary.datasets.push ( dataset1 );
-  summary.datasets.push ( dataset2 );
-
-  return summary;
 
 }

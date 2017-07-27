@@ -60,6 +60,9 @@ $(document).ready(function()
             e.preventDefault();
         });
     });
+    $( function() {
+        $( "#collapse" ).accordion();
+    });
 });
 </script>
 </head>
@@ -80,11 +83,15 @@ $(document).ready(function()
         <h3>General data</h3>
         <p>
             Here a table will be placed</br>
-
-            Columns common to all datasets (should be collapsible)</br>
-
+        </p>
+        <div id="collapse">
+            <h5>Columns common to all datasets (will be collapsible)</h5>
+            <p>
+                Hopefully this is collapsable
+            </p>
+        </div>
+        <p>
             Dataset #n (should also be collapsible)</br>
-
         </p>
     </div>
     <div id="tab2" style="width:100%;">

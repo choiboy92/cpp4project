@@ -26,58 +26,33 @@
   <p>
     <hr/>  <!--Horizontal line across page-->
   </p>
-  <!--This is where i make my tabs
-  <ul class ="tabs">
-
--->
+  <!--This is where i make my tabs-->
 
   <div id="tabs">
     <ul>
-      <li><a href="#tabs-1">Summary</a></li>
-      <li><a href="#tabs-2">History</a></li>
-      <li><a href="#tabs-3">HKL List</a></li>
-      <li><a href="#tabs-4">HKL Zones</a></li>
+      <li><a href="#tab1">Summary</a></li>
+      <li><a href="#tab2">History</a></li>
+      <li><a href="#tab3">HKL List</a></li>
+      <li><a href="#tab4">HKL Zones</a></li>
     </ul>
-    <div id="tabs-1">
-      <p><hr></p>
-      <h3>General data</h3>
-      <p>
-          Here a table will be placed</br>
-
-          Columns common to all datasets (should be collapsible)</br>
-
-          Dataset #n (should also be collapsible)</br>
-
-      </p>
+    <div id="tab1">
     </div>
-    <div id="tabs-2">
+    <div id="tab2">
     </div>
-    <div id="tabs-3">
+    <div id="tab3">
     </div>
-    <div id="tabs-4">
-      <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-      <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+    <div id="tab4">
     </div>
   </div>
 
-  <!--
-  <ul id ="tabs">
+ <!--
+  <ul class ="tabs">
   <li><a href="#tab1">General</a></li>
   <li><a href="#tab2">Summary</a></li>
   <li><a href="#tab3">HKL List</a></li>
   <li><a href="#tab4">HKL Zones</a></li>
   </ul>
   <div id="tab1" style="width:100%;">
-      <p><hr></p>
-      <h3>General data</h3>
-      <p>
-          Here a table will be placed</br>
-
-          Columns common to all datasets (should be collapsible)</br>
-
-          Dataset #n (should also be collapsible)</br>
-
-      </p>
   </div>
   <div id="tab2" style="width:100%;">
       <h3>History</h3>
@@ -102,24 +77,55 @@
       </p>
   </div>
 -->
-
   <script>
-
+  var cell;
     $(document).ready(function()  {
-
       $( "#tabs" ).tabs();
-
       $(function() {
         $( document ).tooltip();
       });
+/*
+      $('ul.tabs').each(function ()
+      {
+          var $active, $content, $links = $(this).find('a');
+          $active = $($links.filter('[href="'+location.hash+'"]')[0] || $links[0]);
+          $active.addClass('active');
+
+          $content = $($active[0].hash);
+          // Hide others
+          $links.not($active).each(function ()
+          {
+              $(this.hash).hide();
+          });
+
+          // Bind the click event handler
+          $(this).on('click', 'a', function(e)
+          {
+              // Make the old tab inactive.
+              $active.removeClass('active');
+              $content.hide();
+
+              // Update the variables with the new link and content
+              $active = $(this);
+              $content = $(this.hash);
+
+              // Make  tab active.
+              $active.addClass('active');
+              $content.show();
+              e.preventDefault();
+          });
+      });
+      $( function() {
+          $( "#collapse" ).accordion();
+      });
+      */
 
       var viewhkl = new jsViewHKL();
-
-      viewhkl.Init ( 'scene' );
-      viewhkl.Load ( 'data/rnase.mtz' );
-
+      //User inputs data file which will be stored as data_url_str variable
+      var data_url_str = 'data/rnase.mtz';
+      viewhkl.Init ( 'scene', data_url_str);
+      viewhkl.Load ( data_url_str );
     });
-
   </script>
 
 </body>
