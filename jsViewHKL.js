@@ -16,7 +16,7 @@ jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
   // I moved this.makeLayout from the jsViewHKL.Init function
   // and put it in the load so that variables dont have to be
   // declared globally and it can be placed in the table
-  this.makeLayout(data_url_str, cell);
+  //this.makeLayout(data_url_str, cell);
 }
 
 jsViewHKL.prototype.Load = function ( url_str )  {
@@ -71,7 +71,8 @@ jsViewHKL.prototype.Load = function ( url_str )  {
           var reflections = new DataView ( arrayBuffer,80,hoffset-80 );
           t.processData ( header,reflections );
 
-
+          //I've put makeLayouthere for now as variables won't show if put in initialisation
+          t.makeLayout(url_str);
         }
 
       } else {
@@ -98,40 +99,91 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   this.symm = [];
   this.column = [];
   this.column_src = [];
-  this.dataset    = [];
+  this.dataset = [];
+  this.syminf = [];
+  this.ncol = [];
 
-  for (var i=0;i<header.length;i++)
-  {
+  function whiteSpaceFilter(str) {
+    return /\S/.test(str);
+  }
+
+  for (var i=0;i<header.length;i++)  {
       var hlist = header[i].split(" ");
       var key   = hlist[0].toLowerCase();
 
-      if (key=='cell')
-      {
-
-          this.cell = hlist.slice(1).join(' ');
-
+      if (key == 'ncol')  {
+          this.ncol = hlist.slice(1).filter(whiteSpaceFilter);
+          this.numreflections = this.ncol[1];
       }
-      else if (key=='symm')
-      {
+      else if (key == 'cell')  {
+          this.cell = hlist.slice(1).join(" ");
+      }
+      else if (key == 'syminf')  {
+          //Declare var which contain array position of start and end of space group name
+          var x_start;
+          var x_end;
+
+          //Store hlist as an array with no whitespace between each element
+          this.syminf = hlist.slice(1).filter(whiteSpaceFilter);
+
+          //acquire position of arrays containing spacegroup
+          for(q=0;q<this.syminf.length;q++)  {
+              if (this.syminf[q].startsWith("'") == true)  {
+                  var x_start = q;
+              }
+              if (this.syminf[q].endsWith("'") == true)  {
+                  var x_end = q + 1;
+              }
+          }
+          this.spacegroup = this.syminf.slice(x_start,x_end).join(" ");
+      }
+      else if (key == 'symm')  {
           this.symm.push ( hlist.slice(1).join('\n').replace(/\s/g, '') );
       }
-      else if (key=='ndif')
-      {
-          hlist = String(hlist);
-          this.ndif = parseInt(hlist);
-          alert (' hlist after slice = ' + this.ndif);
+      else if (key == 'reso')  {
+          var reso = hlist.slice(1).filter(whiteSpaceFilter);
 
-          for (var j=0;j<this.ndif;j++)
-          {
+          this.lowreso = reso[0];
+          this.highreso = reso[1];
+      }
+      else if (key == 'ndif')  {
+          this.ndif = hlist.slice(1).filter(whiteSpaceFilter);
+
+          for (var j=0;j<this.ndif;j++)  {
               this.dataset.push ( {} );
           }
       }
-      /*else if (key=='project')
-      {
-          var n = parseInt(hlist[1]);
-          this.dataset[i].project = hlist.slice(2).join(' ');
-      }*/
+      //Put components of datasets into an datasets object
+      else if (key == 'project')  {
+          // create array that stores data in order as array without white-space
+          var projectarray = hlist.slice(1).filter(whiteSpaceFilter);
 
+          //Get dataset number from first element
+          var x = parseInt(projectarray[0]);
+
+          //Put rest of data in dataset object
+          this.dataset[x].project = projectarray.slice(1).join(' ');
+      }
+      else if (key == 'crystal')  {
+          var crystalarray = hlist.slice(1).filter(whiteSpaceFilter);
+          var x = parseInt(crystalarray);
+          this.dataset[x].crystal = crystalarray.slice(1).join(' ');
+      }
+      else if (key == 'dataset')  {
+          var dsarray = hlist.slice(1).filter(whiteSpaceFilter);
+          var x = parseInt(dsarray);
+          this.dataset[x].ds = dsarray.slice(1).join(' ');
+      }
+      else if (key == 'dcell')  {
+          var dcellarray = hlist.slice(1).filter(whiteSpaceFilter);
+          var x = parseInt(dcellarray);
+          this.dataset[x].dcell = dcellarray.slice(1).join(' ');
+      }
+      else if (key == 'dwavel')  {
+          var dwavelarray = hlist.slice(1).filter(whiteSpaceFilter);
+          var x = parseInt(dwavelarray);
+          this.dataset[x].dwavel = dwavelarray.slice(1).join(' ');
+      }
   }
 
 

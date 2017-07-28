@@ -7,16 +7,16 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 
   var tab1 = document.getElementById("tab1");
   tab1.innerHTML ='<p><hr></p><h3>General data</h3>' +
-    '<table class="table-blue">'+
-    '<tr><td>Path</td><td>'+ data_url_str +'</td></tr>' +
+    '<table style="table-blue">'+
+    '<tr><th>Path</th><td>'+ data_url_str +'</td></tr>' +
     '<tr><td>Type</td><td> Merged MTZ </td></tr>' +
-    '<tr><td>Space Group</td><td> Data for space group </td></tr>' +
+    '<tr><td>Space Group</td><td>'+ this.spacegroup +'</td></tr>' +
     '<tr><td>Space Group Confidence</td><td> Data for Space group confidence </td></tr>' +
     '<tr><td>Cell</td><td>'+ this.cell +'</td></tr>' +
-    '<tr><td>Resolution Low</td><td> Data for Resolution low </td></tr>' +
-    '<tr><td>Resolution High</td><td> Data for Resolution High </td></tr>' +
+    '<tr><td>Resolution Low</td><td>'+ this.lowreso +'</td></tr>' +
+    '<tr><td>Resolution High</td><td>'+ this.highreso +'</td></tr>' +
     '<tr><td>Number of Lattices</td><td> Data for Number of Lattices </td></tr>' +
-    '<tr><td>Number of Reflections</td><td> Data for Number of Reflections </td></tr>' +
+    '<tr><td>Number of Reflections</td><td>'+ this.numreflections +'</td></tr>' +
     '<tr><td>Number of Datasets</td><td>'+ this.ndif +'</td></tr> </table>';
   var tab2 = document.getElementById ( "tab2" );
   tab2.innerHTML = '<h3>History</h3><p>' +
@@ -41,7 +41,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 
   var tab4 = document.getElementById ( "tab4" );
   tab4.innerHTML =
-    '<table class="table-blue">' +
+    '<table style="table-blue">' +
     ' <tr><th>Col1</th><th>Col2</th><th>COl3</th></tr>' +
     ' <tr><td>Col___1</td><td>Col  2</td><td>COl  3</td></tr>' +
     '</table>';
