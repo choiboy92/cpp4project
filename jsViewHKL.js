@@ -143,8 +143,8 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       else if (key == 'reso')  {
           var reso = hlist.slice(1).filter(whiteSpaceFilter);
 
-          this.lowreso = reso[0];
-          this.highreso = reso[1];
+          this.lowreso = 1.0/Math.pow(reso[0], 2);
+          this.highreso = 1.0/Math.pow(reso[1], 2);
       }
       else if (key == 'ndif')  {
           this.ndif = hlist.slice(1).filter(whiteSpaceFilter);
