@@ -30,7 +30,7 @@ div {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
   width           : 100%;
   border-collapse : collapse;
-  text-align      : center;
+  text-align      : left;
   padding         : 5px 9px 4px 9px;
   border          : 1px solid #488090;
   box-shadow      : 5px 5px 6px #888888;
@@ -65,7 +65,7 @@ div {
   text-decoration : none;
   font-weight     : normal;
   font-style      : normal;
-  text-align      : center;
+  text-align      : left;
   vertical-align  : middle;
   border          : 1px solid #488090;
   padding         : 3px 9px 2px 9px;
