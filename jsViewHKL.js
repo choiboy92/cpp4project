@@ -107,7 +107,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
     return /\S/.test(str);
   }
 
-  alert( 'header.length = ' + header.length );
   for (var i=0;i<header.length;i++)  {
       var hlist = header[i].split(" ");
       var key   = hlist[0].toLowerCase();
@@ -164,7 +163,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       {
           // not sure what to do here
       }
-      //Put components of datasets into an datasets object
+      //Put components of dataset into an dataset object
       else if (key == 'project')  {
           // create array that stores data in order as array without white-space
           var projectarray = hlist.slice(1).filter(whiteSpaceFilter);
@@ -197,7 +196,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       }
       else if (key == 'mtzhist')
       {
-
           for (var n = i+1; n < (header.length - 1); n++)
           {
               this.historyfiles.push( header[n] );
