@@ -101,12 +101,13 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   this.column_src = [];
   this.dataset = [];
   this.syminf = [];
-  this.ncol = [];
+  this.historyfiles = [];
 
   function whiteSpaceFilter(str) {
     return /\S/.test(str);
   }
 
+  alert( 'header.length = ' + header.length );
   for (var i=0;i<header.length;i++)  {
       var hlist = header[i].split(" ");
       var key   = hlist[0].toLowerCase();
@@ -153,6 +154,16 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
               this.dataset.push ( {} );
           }
       }
+      else if (key == 'column')
+      {
+          // find which dataset its part of
+          // find column type (i.e. H, K or L,etc.)
+          // push its data to this.dataset[x].column
+      }
+      else if (key == 'colsrc')
+      {
+          // not sure what to do here
+      }
       //Put components of datasets into an datasets object
       else if (key == 'project')  {
           // create array that stores data in order as array without white-space
@@ -183,6 +194,14 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           var dwavelarray = hlist.slice(1).filter(whiteSpaceFilter);
           var x = parseInt(dwavelarray);
           this.dataset[x].dwavel = dwavelarray.slice(1).join(' ');
+      }
+      else if (key == 'mtzhist')
+      {
+
+          for (var n = i+1; n < (header.length - 1); n++)
+          {
+              this.historyfiles.push( header[n] );
+          }
       }
   }
 
