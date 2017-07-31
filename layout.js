@@ -10,7 +10,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 
   var tab1 = document.getElementById("tab1");
   tab1.innerHTML ='<h2>General data</h2>' +
-    '<table style="table-blue">'+
+    '<table class="table-blue">'+
     '<tr><th>Path</th><td>'+ data_url_str +'</td></tr>' +
     '<tr><th>Type</th><td> Merged MTZ </td></tr>' +
     '<tr><th>Space Group</th><td>'+ this.spacegroup +'</td></tr>' +
@@ -29,7 +29,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
     {
         var datasetnum = i+1;
         tab1.innerHTML += '<div id = "collapse"><h2> Dataset #'+ datasetnum +
-        '</h2><table style="table-blue">'+
+        '</h2><table class="table-blue">'+
         '<tr><th>Cell</th><td>'+ this.dataset[i].dcell + '</td></tr>' +
         '<tr><th>Wavelength</th><td>'+ this.dataset[i].dwavel + '</td></tr>' +
         '<tr><th>Column Label</th><td> DATA for column labels</td></tr>' +
@@ -42,7 +42,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
   //Print each line of historyfiles separated by a line break//
       this.historyfiles.join("<br/>") + '</p>' +
       '<h3>Summary</h3><p>' +
-      '<table style="table-blue">' +
+      '<table class="table-blue">' +
       ' <tr><th></th><th>Dataset</th><th>Group</th><th>Label</th><th>Min</th><th>Max</th>'+
       '<th>Number Missing</th><th>% Complete</th><th>Mean</th><th>Mean abs</th><th>Res. Low</th><th>Res. High</th></tr>'+
       ' <tr><td>Col___1</td><td>Col  2</td><td>COl  3</td><td>COl  3</td><td>COl  3</td><td>COl  3</td>'+
