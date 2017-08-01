@@ -65,9 +65,20 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 
   var tab4 = document.getElementById ( "tab4" );
   tab4.innerHTML =
-    '<table style="table-blue">' +
-    ' <tr><th>Col1</th><th>Col2</th><th>COl3</th></tr>' +
-    ' <tr><td>Col___1</td><td>Col  2</td><td>COl  3</td></tr>' +
-    '</table>';
+    '<canvas id="hklzone" width="300" height="150">Use a compatible browser</canvas>';
+  var canvas = document.getElementById('hklzone');
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgb(200, 0, 0)';
+  ctx.fillRect(75, 30, 50, 50);
+  ctx.strokeRect(52.5,52.5,50,50);
 
+  ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+  ctx.fillRect(30, 30, 50, 50);
+
+  ctx.fillStyle = 'orange';
+  ctx.beginPath();
+  ctx.moveTo(75, 50);
+  ctx.lineTo(100, 75);
+  ctx.lineTo(100, 25);
+  ctx.fill();
 }
