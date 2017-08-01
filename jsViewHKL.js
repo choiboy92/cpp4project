@@ -1,9 +1,28 @@
 
 
 function jsViewHKL()  {
+
   this.method  = 'GET';
   this.endian  = false;
   this.sceneId = '';
+
+  this.spacegroup = null;
+  this.confidence = null;
+  this.cell       = null;
+  this.lowreso    = null;
+
+  this.symm = [];
+  this.dataset = [];
+  this.syminf = [];
+  this.historyfiles = [];
+
+
+  /*
+  '<tr><th>Resolution High</th><td>'+ this.highreso +'</td></tr>' +
+  '<tr><th>Number of Lattices</th><td> Data for Number of Lattices </td></tr>' +
+  '<tr><th>Number of Reflections</th><td>'+ this.numreflections +'</td></tr>' +
+  '<tr><th>Number of Datasets</th><td>'+ this.ndif +'</td></tr> </table>' +
+  */
 
 }
 
@@ -97,8 +116,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   alert ( 'header=\n' + header.join('\n') );
 
   this.symm = [];
-  this.column = [];
-  this.column_src = [];
   this.dataset = [];
   this.syminf = [];
   this.historyfiles = [];
@@ -143,25 +160,20 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       else if (key == 'reso')  {
           var reso = hlist.slice(1).filter(whiteSpaceFilter);
 
-          this.lowreso = 1.0/Math.pow(reso[0], 2);
-          this.highreso = 1.0/Math.pow(reso[1], 2);
+          this.lowreso = 1.0/Math.sqrt(reso[0]);
+          this.highreso = 1.0/Math.sqrt(reso[1]);
       }
       else if (key == 'ndif')  {
           this.ndif = hlist.slice(1).filter(whiteSpaceFilter);
 
           for (var j=0;j<this.ndif;j++)  {
-              this.dataset.push ( {} );
+              var dataset = {};
+              dataset.col_labels = [];
+              dataset.col_types  = [];
+              dataset.min        = [];
+              dataset.max        = [];
+              this.dataset.push ( dataset );
           }
-      }
-      else if (key == 'column')
-      {
-          // find which dataset its part of
-          // find column type (i.e. H, K or L,etc.)
-          // push its data to this.dataset[x].column
-      }
-      else if (key == 'colsrc')
-      {
-          // not sure what to do here
       }
       //Put components of dataset into an dataset object
       else if (key == 'project')  {
@@ -204,6 +216,22 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   }
 
 
+  for (var i=0;i<header.length;i++)  {
+    else if (key == 'column')
+    {
+      var x = ....
+      this.dataset[x].col_labels.push ( );
+      this.dataset[x].col_types.push ( );
+      this.dataset[x].min.push ( );
+      this.dataset[x].max.push ( );
+      // find which dataset its part of
+        // find which dataset its part of
+        // find column type (i.e. H, K or L,etc.)
+        // push its data to this.dataset[x].column
+    }
+  }
+
+  /*
   var S = "";
   for (var i=0;i<22;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
@@ -217,9 +245,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   for (var i=n1;i<n2;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
 
-  //alert ( S );
-
-
-
+  alert ( S );
+  */
 
 }

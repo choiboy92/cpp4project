@@ -1,17 +1,117 @@
 
+
+function make_table()  {
+var table = document.createElement ('table')
+  table.setAttribute ( 'class','table-blue' );
+  table.setAttribute ( 'style','width:auto' );
+  return table;
+}
+
+function make_row ( title,data,table )  {
+  if (data!=null)  {
+    var trow = document.createElement ( 'tr' );
+    trow.innerHTML = '<th class="table-blue-vh">' + title + '</th><td>' + data + '</td>';
+    table.appendChild ( trow );
+  }
+}
+
+function add_row ( title,table )  {
+  var trow = document.createElement ( 'tr' );
+  trow.innerHTML = '<th class="table-blue-vh">' + title + '</th>';
+  table.appendChild ( trow );
+  return trow;
+}
+
+function add_data ( data,colSpan,trow )  {
+  var td = document.createElement ( 'td' );
+  td.innerHTML = '<td class="table-blue-td" colSpan="' + colSpan + '">' + data + '</td>';
+  trow.appendChild ( td );
+  return td;
+}
+
+
+function put_label ( text,element )  {
+  var label = document.createElement ( 'span' );
+  label.innerHTML = text;
+  element.appendChild ( label );
+}
+
+var id_counter = 0;
+
+function make_section ( title,element )  {
+// will return a reference to the content panel of the section (single accordeon widget)
+var div    = document.createElement ( 'div' );
+var header = document.createElement ( 'h3'  );
+var panel  = document.createElement ( 'div' );
+
+  var id = 'accordion_' + id_counter++;
+  div.setAttribute ( 'id',id );
+  header.innerHTML = title;
+  div.appendChild ( header );
+  div.appendChild ( panel  );
+  element.appendChild ( div );
+
+  $('#'+ id).accordion({
+    active      : false,
+    collapsible : true,
+    heightStyle : "content"
+  });
+
+  return panel;
+
+}
+
+
 jsViewHKL.prototype.makeLayout = function(data_url_str)  {
-// general initialisation function
-  //alert('URL_STR = ' = data_url_str);
-  //alert ( 'makeLayout');
-  //alert('cell = ' + cell);
-  /*$( function() {
-        $( "#accordion" ).accordion();
-  });*/
 
   var tab1 = document.getElementById("tab1");
-  tab1.innerHTML ='<h2>General data</h2>' +
+  put_label ( '<h2>General data</h2>',tab1 );
+  var table1 = make_table();
+  tab1.appendChild ( table1 );
+  make_row ( 'Path',data_url_str,table1 );
+  make_row ( 'Type','Merged MTZ',table1 );
+  make_row ( 'Resolution low',Math.round(100*this.lowreso)/100,table1 );
+  make_row ( 'Resolution high',Math.round(100*this.highreso)/100,table1 );
+
+  put_label ( '<p>',tab1 );
+
+  //Add collapsable table data dynamically
+  for (var i = 0; i < this.ndif; i++)
+  {
+      var datasetnum = i+1;
+      var sectitle;
+      if (i>0)  sectitle = 'Dataset #'+ datasetnum;
+          else  sectitle = 'Columns common to all datasets';
+      var panel    = make_section ( sectitle,tab1 );
+      var table_ds = make_table();
+
+      panel.appendChild ( table_ds );
+
+      var trow = add_row ( 'Cell',table_ds );
+      add_data ( this.dataset[i].dcell,6,trow );
+      trow = add_row ( 'Wavelength',table_ds );
+      add_data ( this.dataset[i].dwavel,6,trow );
+
+      trow = add_row ( 'Column Label<br>Column Type',table_ds );
+      for (var j=0;j<this.dataset[i].col_labels.length;j++)
+        add_data ( this.dataset[i].col_labels[j]+<br>+this.dataset[i].col_types[j],1,trow );
+
+      /*
+      tab1.innerHTML += '<div id = "accordion"><h3> Dataset #'+ datasetnum +
+      '</h3><table class="table-blue">'+
+      '<tr><th>Cell</th><td>'+ this.dataset[i].dcell + '</td></tr>' +
+      '<tr><th>Wavelength</th><td>'+ this.dataset[i].dwavel + '</td></tr>' +
+      '<tr><th>Column Label</th><td> DATA for column labels</td></tr>' +
+      '<tr><th>Column Type</th><td>DATA for column types</td></tr>' +
+      '</table></div>';
+      */
+  }
+
+
+/*
+  tab1.innerHTML = '<h2>General data</h2>' +
     '<table class="table-blue">'+
-    '<tr><th>Path</th><td>'+ data_url_str +'</td></tr>' +
+    '<tr><th class="table-blue-vh">Path</th><td>'+ data_url_str +'</td></tr>' +
     '<tr><th>Type</th><td> Merged MTZ </td></tr>' +
     '<tr><th>Space Group</th><td>'+ this.spacegroup +'</td></tr>' +
     '<tr><th>Space Group Confidence</th><td> Data for Space group confidence </td></tr>' +
@@ -36,6 +136,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
         '<tr><th>Column Type</th><td>DATA for column types</td></tr>' +
         '</table></div>';
     }
+*/
 
   var tab2 = document.getElementById ( "tab2" );
   tab2.innerHTML = '<h3>History</h3><p>' +
