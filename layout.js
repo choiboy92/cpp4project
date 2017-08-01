@@ -5,7 +5,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
   //alert ( 'makeLayout');
   //alert('cell = ' + cell);
   /*$( function() {
-      $( "#accordion" ).accordion();
+        $( "#accordion" ).accordion();
   });*/
 
   var tab1 = document.getElementById("tab1");
@@ -28,8 +28,8 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
     for (var i = 0; i < this.ndif; i++)
     {
         var datasetnum = i+1;
-        tab1.innerHTML += '<div id = "collapse"><h2> Dataset #'+ datasetnum +
-        '</h2><table class="table-blue">'+
+        tab1.innerHTML += '<div id = "accordion"><h3> Dataset #'+ datasetnum +
+        '</h3><table class="table-blue">'+
         '<tr><th>Cell</th><td>'+ this.dataset[i].dcell + '</td></tr>' +
         '<tr><th>Wavelength</th><td>'+ this.dataset[i].dwavel + '</td></tr>' +
         '<tr><th>Column Label</th><td> DATA for column labels</td></tr>' +
