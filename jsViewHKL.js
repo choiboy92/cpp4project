@@ -7,23 +7,18 @@ function jsViewHKL()  {
   this.sceneId = '';
 
   this.spacegroup = null;
-  this.confidence = null;
+  this.spacegroupconf = null;
   this.cell       = null;
   this.lowreso    = null;
+  this.highreso   = null;
+  this.latticenum  = null;
+  this.numreflections = null;
+  this.ndif      = null;
 
   this.symm = [];
   this.dataset = [];
   this.syminf = [];
   this.historyfiles = [];
-
-
-  /*
-  '<tr><th>Resolution High</th><td>'+ this.highreso +'</td></tr>' +
-  '<tr><th>Number of Lattices</th><td> Data for Number of Lattices </td></tr>' +
-  '<tr><th>Number of Reflections</th><td>'+ this.numreflections +'</td></tr>' +
-  '<tr><th>Number of Datasets</th><td>'+ this.ndif +'</td></tr> </table>' +
-  */
-
 }
 
 jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
@@ -206,8 +201,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           var x = parseInt(dwavelarray);
           this.dataset[x].dwavel = dwavelarray.slice(1).join(' ');
       }
-      else if (key == 'mtzhist')
-      {
+      else if (key == 'mtzhist')  {
           for (var n = i+1; n < (header.length - 1); n++)
           {
               this.historyfiles.push( header[n] );
@@ -217,21 +211,25 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
 
 
   for (var i=0;i<header.length;i++)  {
-    else if (key == 'column')
-    {
-      var x = ....
-      this.dataset[x].col_labels.push ( );
-      this.dataset[x].col_types.push ( );
-      this.dataset[x].min.push ( );
-      this.dataset[x].max.push ( );
-      // find which dataset its part of
-        // find which dataset its part of
-        // find column type (i.e. H, K or L,etc.)
-        // push its data to this.dataset[x].column
-    }
+      var hlist = header[i].split(" ");
+      var key   = hlist[0].toLowerCase();
+      if (key == 'column')
+      {
+          var col_array = hlist.slice(1).filter(whiteSpaceFilter);
+          var x = col_array[4];
+          this.dataset[x].col_labels.push ( col_array[0] );
+          this.dataset[x].col_types.push ( col_array[1] );
+          this.dataset[x].min.push ( col_array[2] );
+          this.dataset[x].max.push ( col_array[3] );
+          /*for (var z = 0; z < this.dataset[x].col_labels.length; z++) {
+              alert ('col_labels['+z+'] = ' + this.dataset[x].col_labels[z]);
+              alert ('min['+z+'] = ' + this.dataset[x].min[z]);
+              alert ('max['+z+'] = ' + this.dataset[x].max[z]);
+          }*/
+      }
   }
 
-  /*
+
   var S = "";
   for (var i=0;i<22;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
@@ -245,7 +243,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   for (var i=n1;i<n2;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
 
-  alert ( S );
-  */
+  //alert ( S );
 
 }

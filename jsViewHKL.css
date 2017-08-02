@@ -57,7 +57,7 @@ div {
   padding         : 5px 9px 4px 9px;
   background-color: #5d9bd0;
   color           : #ffffff;
-  white-space     : nowrap;
+  /*white-space     : nowrap;*/
 }
 .table-blue-td, .table-blue td {
   font-size       : 1em;
