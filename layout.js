@@ -61,10 +61,10 @@ var panel  = document.createElement ( 'div' );
 
 }
 
-function make_bigcircle ( max_data_H )  {
+function make_bigcircle ( max_data )  {
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
-    var sep = 300/max_data_H;
+    this.sep = 300/max_data;
     ctx.arc(350,325,300,0, Math.PI*2, 1);
     ctx.stroke();
 }
@@ -100,6 +100,7 @@ function draw_arrow ( col_labels, orientation )  {
     ctx.closePath();
     ctx.fill();
 }
+
 
 //function to make rows for summary section
 function make_summ_row( ds,grp,label,type,min,max,num_miss,complt,mean,mean_abs,lowres,highres, table) {
@@ -182,7 +183,7 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
           var mean_abs = null;
           var lowres = null;
           var highres = null;
-          make_summ_row(i,n,labels,types,min,max,num_miss,complt,mean,mean_abs,lowres,highres,table2);
+          make_summ_row((i+1),n,labels,types,min,max,num_miss,complt,mean,mean_abs,lowres,highres,table2);
       }
   }
 
@@ -206,7 +207,20 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 
   var tab4 = document.getElementById ( "tab4" );
   tab4.innerHTML ='<canvas id="hklzone" width="700" height="650">'+
-  'Use a compatible browser</canvas>';
-  var bigcircle = make_bigcircle( this.dataset[0].max[0] );
-  var hrz_arrow = draw_arrow( this.dataset[0].col_labels[0], 'horizontal');
+  'Use a compatible browser</canvas><br/><button> A button element</button>';
+  if ( this.dataset[0].max[0]>(this.dataset[0].max[1]||this.dataset[0].max[2]) )
+  {
+    var bigcircle = make_bigcircle( this.dataset[0].max[0] );
+  }
+  else if ( this.dataset[0].max[1]>(this.dataset[0].max[0]||this.dataset[0].max[2]) )
+  {
+    var bigcircle = make_bigcircle( this.dataset[0].max[1] );
+  }
+  else if ( this.dataset[0].max[2]>(this.dataset[0].max[0]||this.dataset[0].max[1]) )
+  {
+    var bigcircle = make_bigcircle( this.dataset[0].max[2] );
+  }
+  var hrz_arrow = draw_arrow( this.dataset[0].col_labels[1], 'horizontal');
+  //alert('Sep = '+ sep);
+
 }
