@@ -24,7 +24,19 @@ function add_row ( title,table )  {
 
 function add_data ( data,colSpan,trow )  {
   var td = document.createElement ( 'td' );
-  td.innerHTML = '<td class="table-blue-td" colSpan="' + colSpan + '">' + data + '</td>';
+  td.setAttribute ( 'class','table-blue-td' );
+  td.setAttribute ( 'colSpan',colSpan       );
+  td.innerHTML = data;
+  trow.appendChild ( td );
+  return td;
+}
+
+function add_stretch ( stretch_val,colSpan,trow )  {
+  var td = document.createElement ( 'td' );
+  td.setAttribute ( 'class','table-blue-td' );
+  td.setAttribute ( 'colSpan',colSpan       );
+  td.setAttribute ( 'style','width:'+stretch_val );
+  td.innerHTML = '&nbsp;';
   trow.appendChild ( td );
   return td;
 }
@@ -111,7 +123,8 @@ function make_summ_row( ds,grp,label,type,min,max,num_miss,complt,mean,mean_abs,
     table.appendChild ( summ_row );
 }
 
-jsViewHKL.prototype.makeLayout = function(data_url_str)  {
+
+jsViewHKL.prototype.makeTab1 = function(data_url_str)  {
 
   var tab1 = document.getElementById("tab1");
   put_label ( '<h2>General data</h2>',tab1 );
@@ -121,41 +134,43 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
   make_row ( 'Type','Merged MTZ',table1 );
   make_row ( 'Space group', this.spacegroup, table1 );
   make_row ( 'Space group confidence', this.spacegroupconf, table1 );
-  make_row ( 'Cell', this.cell, table1 );
+  make_row ( 'Cell (a,b,c,&alpha;,&beta;,&gamma;)', this.cell, table1 );
   make_row ( 'Resolution low',Math.round(100*this.lowreso)/100,table1 );
   make_row ( 'Resolution high',Math.round(100*this.highreso)/100,table1 );
   make_row ( 'Number of Lattices', this.latticenum, table1 );
   make_row ( 'Number of Reflections', this.numreflections, table1 );
   make_row ( 'Number of Datasets', this.ndif, table1 );
 
-
   put_label ( '<p>',tab1 );
-
-  var commontitle = 'Columns common to all datasets';
-  var panel    = make_section ( commontitle,tab1 );
-  var table_ds = make_table();
-  panel.appendChild ( table_ds );
 
   //Add collapsable table data dynamically
   for (var i = 0; i < this.ndif; i++)
   {
       var datasetnum = i+1;
-      sectitle = 'Dataset #'+ datasetnum;
+      var sectitle;
+      if (i==0)  sectitle = 'Columns common to all datasets';
+           else  sectitle = 'Dataset #'+ datasetnum;
       var panel    = make_section ( sectitle,tab1 );
       var table_ds = make_table();
 
       panel.appendChild ( table_ds );
 
-      var trow = add_row ( 'Cell',table_ds );
+      var trow = add_row ( 'Cell (a,b,c,&alpha;,&beta;,&gamma;)',table_ds );
       add_data ( this.dataset[i].dcell,6,trow );
       trow = add_row ( 'Wavelength',table_ds );
       add_data ( this.dataset[i].dwavel,6,trow );
 
       trow = add_row ( 'Column Label<br>Column Type',table_ds );
       for (var j=0;j<this.dataset[i].col_labels.length;j++)
-      add_data ( this.dataset[i].col_labels[j]+'<br>'+this.dataset[i].col_types[j],1,trow );
+      add_data ( '<center>' + this.dataset[i].col_labels[j] + '<br><i>' +
+                 this.dataset[i].col_types[j] + '</i></center>',1,trow );
+      add_stretch ( '95%',1,trow );
   }
 
+}
+
+
+jsViewHKL.prototype.makeTab2 = function()  {
 
   var tab2 = document.getElementById ( "tab2" );
   put_label ( '<h2>History</h2><p>'+this.historyfiles.join("<br/>") + '</p>',tab2 );
@@ -164,28 +179,38 @@ jsViewHKL.prototype.makeLayout = function(data_url_str)  {
   tab2.appendChild ( table2 );
 
   var title_row = document.createElement ( 'tr' );
-  title_row.setAttribute ( 'class','table-blue-vh' );
-  title_row.innerHTML = '<td>Dataset</td><td>Group</td><td>Label</td><td>Type</td><td>Min</td><td>Max</td>'+
-  '<td>Number Missing</td><td>% Complete</td><td>Mean</td><td>Mean abs</td><td>Reso. Low</td><td>Reso. High</td>';
+  title_row.setAttribute ( 'class','table-blue-hh' );
+  title_row.innerHTML = '<td title="Dataset serial number">Dataset</td><td>Group</td><td>Label</td><td>Type</td><td>Min</td><td>Max</td>'+
+  '<td>Number<br>Missing</td><td>% Complete</td><td>Mean</td><td>Mean<br>abs</td><td>Reso.<br>Low</td><td>Reso.<br>High</td>';
   table2.appendChild ( title_row );
 
   //One loop for number of datasets
   //other loop for components of each dataset
+  var col_count = 0;
   for (var i = 0; i < this.ndif; i++) {
       for (var n = 0; n < this.dataset[i].col_labels.length; n++) {
           var labels = this.dataset[i].col_labels[n];
           var types =  this.dataset[i].col_types[n];
           var min = Math.round(100*this.dataset[i].min[n])/100;
           var max = Math.round(100*this.dataset[i].max[n])/100;
-          var num_miss = null;
-          var complt = null;
+          var num_miss = this.numberMissing[col_count];
+          var complt   = Math.round(1000*(this.numreflections-num_miss)/this.numreflections)/10;
           var mean = null;
           var mean_abs = null;
           var lowres = null;
           var highres = null;
           make_summ_row((i+1),n,labels,types,min,max,num_miss,complt,mean,mean_abs,lowres,highres,table2);
+          col_count++;
       }
   }
+
+}
+
+
+jsViewHKL.prototype.makeLayout = function(data_url_str)  {
+
+  this.makeTab1 ( data_url_str );
+  this.makeTab2 ();
 
 
 

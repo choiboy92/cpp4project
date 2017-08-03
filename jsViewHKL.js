@@ -12,13 +12,19 @@ function jsViewHKL()  {
   this.lowreso    = null;
   this.highreso   = null;
   this.latticenum  = null;
+  this.ncols          = null;
+  this.nrows          = null;
   this.numreflections = null;
-  this.ndif      = null;
+  this.ndif           = null;
 
+  this.reflections = null;
   this.symm = [];
   this.dataset = [];
   this.syminf = [];
   this.historyfiles = [];
+
+  this.numberMissing = []; // length will be equal to the number of columns
+
 }
 
 jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
@@ -110,6 +116,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
 
   alert ( 'header=\n' + header.join('\n') );
 
+  this.reflections = reflections;
   this.symm = [];
   this.dataset = [];
   this.syminf = [];
@@ -124,8 +131,11 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       var key   = hlist[0].toLowerCase();
 
       if (key == 'ncol')  {
-          this.ncol = hlist.slice(1).filter(whiteSpaceFilter);
-          this.numreflections = this.ncol[1];
+          var x = hlist.slice(1).filter(whiteSpaceFilter);
+          this.ncols          = x[0];
+          this.numreflections = x[1];
+          this.nrows          = reflections.byteLength/(4*this.ncols);
+          alert ( ' ' + reflections.byteLength + ', ' + this.ncols + ', ' + this.nrows );
       }
       else if (key == 'cell')  {
           this.cell = hlist.slice(1).join(" ");
@@ -194,7 +204,13 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       else if (key == 'dcell')  {
           var dcellarray = hlist.slice(1).filter(whiteSpaceFilter);
           var x = parseInt(dcellarray);
-          this.dataset[x].dcell = dcellarray.slice(1).join(' ');
+          //this.dataset[x].dcell = dcellarray.slice(1).join(' ');
+          dcell = dcellarray.slice(1);
+          this.dataset[x].dcell = '';
+          for (var j=0;j<dcell.length;j++) {
+            this.dataset[x].dcell += parseFloat(dcell[j]) + '&nbsp;';
+            if (j==2)  this.dataset[x].dcell += '&nbsp;&nbsp;&nbsp;'
+          }
       }
       else if (key == 'dwavel')  {
           var dwavelarray = hlist.slice(1).filter(whiteSpaceFilter);
@@ -229,7 +245,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       }
   }
 
-
+/*
   var S = "";
   for (var i=0;i<22;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
@@ -242,7 +258,43 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   S += ' ###\n';
   for (var i=n1;i<n2;i++)
     S += reflections.getFloat32(i*4,this.endian) + ', ';
+*/
 
   //alert ( S );
 
+  this.calculateStats();
+
+}
+
+jsViewHKL.prototype.calculateStats = function()  {
+
+  this.numberMissing = [];
+  for (var i=0;i<this.ncols;i++)  {
+    this.numberMissing.push ( 0 );
+  }
+
+  for (var i=0;i<this.nrows;i++)  {
+    /*
+    var h = this.get_value ( i,0 );
+    var k = this.get_value ( i,1 );
+    var l = this.get_value ( i,2 );
+    var V = this.get_value ( i,3 );
+    if (l==0.0)  {
+      draw circle at (h,k) with radius ~ math.log10(V)
+    }
+    */
+    for (var j=0;j<this.ncols;j++)  {
+      var r = this.get_value ( i,j );
+      if (isNaN(r))
+        this.numberMissing[j]++;
+      else  {
+
+      }
+    }
+  }
+
+}
+
+jsViewHKL.prototype.get_value = function ( row,col )  {
+  return this.reflections.getFloat32((col + row*this.ncols)*4,this.endian);
 }
