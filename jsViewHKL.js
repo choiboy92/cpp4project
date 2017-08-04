@@ -135,7 +135,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           this.ncols          = x[0];
           this.numreflections = x[1];
           this.nrows          = reflections.byteLength/(4*this.ncols);
-          alert ( ' ' + reflections.byteLength + ', ' + this.ncols + ', ' + this.nrows );
+          //alert ( ' ' + reflections.byteLength + ', ' + this.ncols + ', ' + this.nrows );
       }
       else if (key == 'cell')  {
           this.cell = hlist.slice(1).join(" ");
@@ -269,8 +269,14 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
 jsViewHKL.prototype.calculateStats = function()  {
 
   this.numberMissing = [];
+  this.count = [];
+  this.data_total = [];
+  this.abs_data_total = [];
   for (var i=0;i<this.ncols;i++)  {
     this.numberMissing.push ( 0 );
+    this.count.push( 0 );
+    this.data_total.push( 0 );
+    this.abs_data_total.push( 0 );
   }
 
   for (var i=0;i<this.nrows;i++)  {
@@ -285,14 +291,21 @@ jsViewHKL.prototype.calculateStats = function()  {
     */
     for (var j=0;j<this.ncols;j++)  {
       var r = this.get_value ( i,j );
-      if (isNaN(r))
+      if (isNaN(r))  {
         this.numberMissing[j]++;
-      else  {
-
+      }
+      else {
+          this.count[j]++;
+          this.data_total[j] += r;
+          if (r<0) {
+              this.abs_data_total[j] += -r;
+          }
+          else {
+              this.abs_data_total[j] += r;
+          }
       }
     }
   }
-
 }
 
 jsViewHKL.prototype.get_value = function ( row,col )  {

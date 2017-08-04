@@ -113,6 +113,20 @@ function draw_arrow ( col_labels, orientation )  {
     ctx.fill();
 }
 
+  function make_HKdot (h,k,V) {
+    var canvas = document.getElementById('hklzone');
+    var ctx = canvas.getContext('2d');
+    var x = 350 + (k*this.sep);
+    var y = 325 - (h*this.sep);
+    var rad = Math.log10(V);
+    ctx.beginPath();
+    ctx.arc(x,y,rad,0, Math.PI*2, 1);
+    ctx.fillStyle = 'rgba(65, 65, 65, 1)';
+    ctx.lineWidth = 1;
+    ctx.fill();
+    ctx.closePath();
+  }
+
 
 //function to make rows for summary section
 function make_summ_row( ds,grp,label,type,min,max,num_miss,complt,mean,mean_abs,lowres,highres, table) {
@@ -195,8 +209,8 @@ jsViewHKL.prototype.makeTab2 = function()  {
           var max = Math.round(100*this.dataset[i].max[n])/100;
           var num_miss = this.numberMissing[col_count];
           var complt   = Math.round(1000*(this.numreflections-num_miss)/this.numreflections)/10;
-          var mean = null;
-          var mean_abs = null;
+          var mean = Math.round(100*this.data_total[col_count]/this.count[col_count])/100;
+          var mean_abs = Math.round(100*this.abs_data_total[col_count]/this.count[col_count])/100;
           var lowres = null;
           var highres = null;
           make_summ_row((i+1),n,labels,types,min,max,num_miss,complt,mean,mean_abs,lowres,highres,table2);
@@ -206,46 +220,84 @@ jsViewHKL.prototype.makeTab2 = function()  {
 
 }
 
+jsViewHKL.prototype.makeTab3 = function()  {
+    //make table
+    var tab3 = document.getElementById ( "tab3" );
+    var table3 = make_table();
+    tab3.appendChild ( table3 );
+
+    //make header row
+    var trow = document.createElement ( 'tr' );
+    trow.innerHTML = '<th class="table-blue-vh"></th>';
+    table3.appendChild ( trow );
+    for (var n = 0; n < this.ndif; n++) {
+        for (var q =0; q<this.dataset[n].col_labels.length; q++) {
+            var td = document.createElement ( 'th' );
+            td.setAttribute ( 'class','table-blue-hh' );
+            td.innerHTML = this.dataset[n].col_labels[q];
+            trow.appendChild ( td );
+        }
+    }
+    //add reflection data
+    for (var s = 0; s < 100; s++) {
+        var rownum = s+1;
+        var ls_row = document.createElement ( 'tr' );
+        table3.appendChild ( ls_row );
+        for (var d = 0; d <= this.ncols; d++) {
+            var r = Math.round(100*this.get_value( s,d ))/100;
+            if (isNaN(r)){
+                r = '?';
+            }
+            var td = document.createElement ( 'td' );
+            td.setAttribute ( 'class','table-blue-td' );
+            if (d == 0) {
+                td.setAttribute ( 'class','table-blue-hh' );
+                td.innerHTML = rownum;
+            }
+            else  {
+                td.innerHTML = r;
+            }
+            ls_row.appendChild ( td );
+        }
+    }
+}
+
+jsViewHKL.prototype.makeTab4 = function ()  {
+    var tab4 = document.getElementById ( "tab4" );
+    tab4.innerHTML ='<canvas id="hklzone" width="700" height="650">'+
+    'Use a compatible browser</canvas><br/><button> A button element</button>';
+    if ( this.dataset[0].max[0]>(this.dataset[0].max[1]||this.dataset[0].max[2]) )
+    {
+      var bigcircle = make_bigcircle( this.dataset[0].max[0] );
+    }
+    else if ( this.dataset[0].max[1]>(this.dataset[0].max[0]||this.dataset[0].max[2]) )
+    {
+      var bigcircle = make_bigcircle( this.dataset[0].max[1] );
+    }
+    else if ( this.dataset[0].max[2]>(this.dataset[0].max[0]||this.dataset[0].max[1]) )
+    {
+      var bigcircle = make_bigcircle( this.dataset[0].max[2] );
+    }
+    var hrz_arrow = draw_arrow( this.dataset[0].col_labels[1], 'horizontal');
+    //alert('Sep = '+ sep);
+
+    for (var i = 0; i<this.nrows; i++) {
+        var h = this.get_value ( i,0 );
+        var k = this.get_value ( i,1 );
+        var l = this.get_value ( i,2 );
+        var V = this.get_value ( i,3 );
+        if (l==0.0)  {
+            //alert('h = '+h+',k = '+k+',l = '+l+',V = '+Math.log10(V) );
+            //draw circle at (h,k) with radius ~ math.log10(V)
+            make_HKdot(h,k,V);
+        }
+    }
+}
 
 jsViewHKL.prototype.makeLayout = function(data_url_str)  {
 
   this.makeTab1 ( data_url_str );
   this.makeTab2 ();
-
-
-
-
-  var tab3 = document.getElementById ( "tab3" );
-  var table3 = make_table();
-  table3.setAttribute ( 'class','table-blue' );
-  tab3.appendChild ( table3 );
-
-
-  var row = document.createElement ( 'tr' );
-  table3.appendChild ( row );
-
-  for (var i=0;i<3;i++)  {
-    var cell = document.createElement ( 'td' );
-    cell.innerHTML = 'CELL #' + i;
-    row.appendChild ( cell );
-  }
-
-  var tab4 = document.getElementById ( "tab4" );
-  tab4.innerHTML ='<canvas id="hklzone" width="700" height="650">'+
-  'Use a compatible browser</canvas><br/><button> A button element</button>';
-  if ( this.dataset[0].max[0]>(this.dataset[0].max[1]||this.dataset[0].max[2]) )
-  {
-    var bigcircle = make_bigcircle( this.dataset[0].max[0] );
-  }
-  else if ( this.dataset[0].max[1]>(this.dataset[0].max[0]||this.dataset[0].max[2]) )
-  {
-    var bigcircle = make_bigcircle( this.dataset[0].max[1] );
-  }
-  else if ( this.dataset[0].max[2]>(this.dataset[0].max[0]||this.dataset[0].max[1]) )
-  {
-    var bigcircle = make_bigcircle( this.dataset[0].max[2] );
-  }
-  var hrz_arrow = draw_arrow( this.dataset[0].col_labels[1], 'horizontal');
-  //alert('Sep = '+ sep);
-
+  this.makeTab3 ();
+  this.makeTab4 ();
 }
