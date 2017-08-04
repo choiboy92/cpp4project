@@ -287,7 +287,6 @@ jsViewHKL.prototype.makeTab4 = function ()  {
         var l = this.get_value ( i,2 );
         var V = this.get_value ( i,3 );
         if (l==0.0)  {
-            //alert('h = '+h+',k = '+k+',l = '+l+',V = '+Math.log10(V) );
             //draw circle at (h,k) with radius ~ math.log10(V)
             make_HKdot(h,k,V);
         }
