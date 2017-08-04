@@ -114,7 +114,7 @@ jsViewHKL.prototype.Load = function ( url_str )  {
 
 jsViewHKL.prototype.processData = function ( header,reflections )  {
 
-  alert ( 'header=\n' + header.join('\n') );
+  //alert ( 'header=\n' + header.join('\n') );
 
   this.reflections = reflections;
   this.symm = [];
