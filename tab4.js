@@ -69,14 +69,14 @@ function Hdraw_arrow ( col_labels )  {
     var x = 350+(h*this.Hsep);
     var y = 325+(k*this.Vsep);
     // rad has to be something with minV and maxV.
+    if (minV == 0) {
+        minV = maxV/100;
+    }
     if (V == minV) {
         rad = 0;
     }
-    else if (V == maxV) {
-        rad  = (this.Hsep+this.Vsep)/2;
-    }
     else {
-        rad = Math.log10(V);
+        rad = (((((this.Hsep+this.Vsep)/4) - 1)*(Math.log10(V/minV)+1))/Math.log10(maxV/minV));
     }
 
     ctx.beginPath();
