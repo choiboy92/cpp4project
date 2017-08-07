@@ -139,6 +139,7 @@ jsViewHKL.prototype.makeTab2 = function()  {
 
   var title_row = document.createElement ( 'tr' );
   title_row.setAttribute ( 'class','table-blue-hh' );
+
   title_row.innerHTML = '<td title="Dataset serial number">Dataset</td><td>Group</td><td>Label</td><td>Type</td><td>Min</td><td>Max</td>'+
   '<td>Number<br>Missing</td><td>% Complete</td><td>Mean</td><td>Mean<br>abs</td><td>Reso.<br>Low</td><td>Reso.<br>High</td>';
   table2.appendChild ( title_row );
@@ -166,7 +167,6 @@ jsViewHKL.prototype.makeTab2 = function()  {
 }
 
 jsViewHKL.prototype.makeTab3 = function()  {
-    //make table
     var tab3 = document.getElementById ( "tab3" );
     var table3 = make_table();
     tab3.appendChild ( table3 );
@@ -187,9 +187,12 @@ jsViewHKL.prototype.makeTab3 = function()  {
 */
 
     //make header row
+    var header = document.createElement ( 'thead' );
     var trow = document.createElement ( 'tr' );
+    header.appendChild ( trow );
     trow.innerHTML = '<th class="table-blue-vh"></th>';
-    table3.appendChild ( trow );
+    table3.appendChild ( header );
+
     for (var n = 0; n < this.ndif; n++) {
         for (var q =0; q<this.dataset[n].col_labels.length; q++) {
             var td = document.createElement ( 'th' );
@@ -201,15 +204,17 @@ jsViewHKL.prototype.makeTab3 = function()  {
     //add reflection data
     for (var s = 0; s < 100; s++) {
         var rownum = s+1;
+        var tbody = document.createElement( 'tbody' );
         var ls_row = document.createElement ( 'tr' );
-        table3.appendChild ( ls_row );
+        tbody.appendChild (ls_row)
+        table3.appendChild ( tbody );
         for (var d = 0; d <= this.ncols; d++) {
             var r = Math.round(100*this.get_value( s,d ))/100;
+            var td = document.createElement ( 'td' );
+            td.setAttribute ( 'class','table-blue-td' );
             if (isNaN(r)){
                 r = '?';
             }
-            var td = document.createElement ( 'td' );
-            td.setAttribute ( 'class','table-blue-td' );
             if (d == 0) {
                 td.setAttribute ( 'class','table-blue-hh' );
                 td.innerHTML = rownum;

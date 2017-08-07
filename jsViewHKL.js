@@ -237,11 +237,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           this.dataset[x].col_types.push ( col_array[1] );
           this.dataset[x].min.push ( col_array[2] );
           this.dataset[x].max.push ( col_array[3] );
-          /*for (var z = 0; z < this.dataset[x].col_labels.length; z++) {
-              alert ('col_labels['+z+'] = ' + this.dataset[x].col_labels[z]);
-              alert ('min['+z+'] = ' + this.dataset[x].min[z]);
-              alert ('max['+z+'] = ' + this.dataset[x].max[z]);
-          }*/
       }
   }
 
