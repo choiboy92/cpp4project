@@ -65,19 +65,15 @@ function Hdraw_arrow ( col_labels )  {
   function make_HKdot (h,k,V, minV, maxV) {
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
-    var rad;
+    var maxRad = (this.Hsep+this.Vsep)/4;
     var x = 350+(h*this.Hsep);
     var y = 325+(k*this.Vsep);
     // rad has to be something with minV and maxV.
+    var rad;
     if (minV == 0) {
         minV = maxV/100;
     }
-    if (V == minV) {
-        rad = 0;
-    }
-    else {
-        rad = (((((this.Hsep+this.Vsep)/4) - 1)*(Math.log10(V/minV)+1))/Math.log10(maxV/minV));
-    }
+    rad = (((maxRad - 1)*(Math.log10(V/minV)+1))/Math.log10(maxV/minV));
 
     ctx.beginPath();
     ctx.arc(x,y,rad,0, Math.PI*2, 1);
