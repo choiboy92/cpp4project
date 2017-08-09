@@ -11,26 +11,32 @@ function make_bigcircle ( Hmax_data, Vmax_data )  {
 function Hdraw_arrow ( col_labels )  {
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
-    ctx.fillStyle   = 'rgba(0, 255, 0, 0.75)';
-    ctx.strokeStyle = 'rgba(0, 255, 0, 0.75)';
     ctx.lineWidth = 4;
     var linestart_x = 0;
     var linestart_y = 325;
     var lineend_x = 675;
     var lineend_y = linestart_y;
 
-    ctx.font = '25px arial';
-    ctx.fillText(col_labels, 670, 308);
     ctx.beginPath();
+    ctx.font = '25px arial';
+    ctx.fillStyle   = 'rgba(250, 0, 0, 0.75)';
+    ctx.fillText(col_labels, 670, 308);
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(250, 0, 0, 0.75)';
     ctx.moveTo(linestart_x, linestart_y);
     ctx.lineTo(lineend_x,lineend_y);
+    ctx.closePath();
     ctx.stroke();
 
+    ctx.beginPath();
+    ctx.fillStyle   = 'rgba(250, 0, 0, 0.75)';
     ctx.moveTo(lineend_x,lineend_y-10);
     ctx.lineTo(lineend_x,lineend_y+10);
     ctx.lineTo(lineend_x + 15,lineend_y);
-    ctx.closePath();
     ctx.fill();
+    ctx.closePath();
 
   }
 
@@ -38,8 +44,6 @@ function Hdraw_arrow ( col_labels )  {
   function Vdraw_arrow (col_labels) {
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgba(0, 255, 0, 0.75)';
-      ctx.strokeStyle = 'rgba(0, 255, 0, 0.75)';
       ctx.lineWidth = 4;
 
       var linestart_x = 350;
@@ -47,22 +51,29 @@ function Hdraw_arrow ( col_labels )  {
       var lineend_y = 15;
       var lineend_x = linestart_x;
 
+      ctx.beginPath();
+      ctx.fillStyle   = 'rgba(250, 0, 0, 0.75)';
       ctx.font = '25px arial';
       ctx.fillText(col_labels, 360, 20);
+      ctx.closePath();
 
       ctx.beginPath();
+      ctx.strokeStyle = 'rgba(250, 0, 0, 0.75)';
       ctx.moveTo(linestart_x, linestart_y);
       ctx.lineTo(lineend_x,lineend_y);
+      ctx.closePath();
       ctx.stroke();
 
+      ctx.beginPath();
+      ctx.fillStyle   = 'rgba(250, 0, 0, 0.75)';
       ctx.moveTo(lineend_x-10,lineend_y);
       ctx.lineTo(lineend_x+10,lineend_y);
       ctx.lineTo(lineend_x,lineend_y-15);
-      ctx.closePath();
       ctx.fill();
+      ctx.closePath();
+
   }
 
-/*
 
 function erf(x){
     // erf(x) = 2/sqrt(pi) * integrate(from=0, to=x, e^-(t^2) ) dt
@@ -81,67 +92,56 @@ function erf(x){
 }
 
 
-  ithresh   = 0.75;
-  vcontrast = 0.5;
-  rmin      = 1;
-  rmax      = maxRad;
+  function make_HKdot (h,k,V, maxV) {
+      var canvas = document.getElementById('hklzone');
+      var ctx = canvas.getContext('2d');
+      maxRad = (this.Hsep+this.Vsep)/4;
+      var x = 350+(h*this.Hsep);
+      var y = 325+(k*this.Vsep);
 
-  Vmax = maxV*ithresh;
+      ithresh   = 0.75;
+      vcontrast = 0.5;
+      rmin      = 1;
+      rmax      = maxRad;
 
-  val = qMin(1.0,V/Vmax) - 0.5;
-  val = (1.0 + erf(3.0*vcontrast*val)/erf(3.0*vcontrast/2.0))/2.0;
+      Vmax = maxV*ithresh;
 
-  val = Math.pow ( Math.abs(val),0.66 );
+      val = Math.min(1.0,V/Vmax) - 0.5;
+      val = (1.0 + erf(3.0*vcontrast*val)/erf(3.0*vcontrast/2.0))/2.0;
 
-  logv = qMax ( 0.0,val*Vmax );
-  r2 = logv/Vmax;
-  r2 = qMax ( 1.02*rmin,rmax*qMin(1.0,sqrt(r2)) );
-  r1 = rmax*vcontrast - rmax/Vmax*(Vmax-logv);
-  r1 = qMax ( 1.01*rmin,sqrt(r1)  );
-  r1 = qMin ( r1,r2-0.01*rmin     );
+      val = Math.pow ( Math.abs(val),0.66 );
 
-  vm = qMax ( Vmax*vcontrast,logv );
-  vm = logv/vm;
+      logv = Math.max ( 0.0,val*Vmax );
+      r2 = logv/Vmax;
+      r2 = Math.max ( 1.02*rmin,rmax*Math.min(1.0,Math.sqrt(r2)) );
+      r1 = rmax*vcontrast - rmax/Vmax*(Vmax-logv);
+      r1 = Math.max ( 1.01*rmin,Math.sqrt(r1)  );
+      r1 = Math.min ( r1,r2-0.01*rmin     );
 
-  if (vcontrast<=0.01)  c = 0;
-                  else  c = _roundi(color_range*(1.0-qMin(1.0,vm)));
-  c = Math.max ( c,0   );
-  c = Math.min ( c,255 );
+      vm = Math.max ( Vmax*vcontrast,logv );
+      vm = logv/vm;
 
-  draw spot with radius 'r2' and color (c,c,c)
+      color_range = 230;
 
+      if (vcontrast<=0.01)  c = 0;
+                      else  c = Math.round(color_range*(1.0-Math.min(1.0,vm)));
+      c = Math.max ( c,0   );
+      c = Math.min ( c,255 );
+      //alert('c = ' + c);
 
-*/
-
-
-
-
-  function make_HKdot (h,k,V, minV, maxV) {
-    var canvas = document.getElementById('hklzone');
-    var ctx = canvas.getContext('2d');
-    var maxRad = (this.Hsep+this.Vsep)/6;
-    var x = 350+(h*this.Hsep);
-    var y = 325+(k*this.Vsep);
-    // rad has to be something with minV and maxV.
-    var rad;
-    if (minV == 0) {
-        minV = maxV/100;
-    }
-
-    rad = (((maxRad - 1)*(Math.log10(V/minV)+1))/Math.log10(maxV/minV));
-
-    ctx.beginPath();
-    ctx.arc(x,y,rad,0, Math.PI*2, 1);
-    ctx.fillStyle = 'rgba(65, 65, 65, 1)';
-    ctx.lineWidth = 0;
-    ctx.fill();
-    ctx.closePath();
+      //draw spot with radius 'r2' and color (c,c,c)
+      ctx.beginPath();
+      ctx.lineWidth = 0;
+      ctx.arc(x,y,r2,0, Math.PI*2, 1);
+      ctx.fillStyle = 'rgba('+c+', '+c+', '+c+', 1)';
+      ctx.fill();
+      ctx.closePath();
   }
 
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
     tab4.innerHTML ='<canvas id="hklzone" width="700" height="650">'+
-    'Use a compatible browser</canvas><br/><button> A button element</button>';
+    'Use a compatible browser</canvas><br/>';
     /*if ( this.dataset[0].max[0]>(this.dataset[0].max[1]||this.dataset[0].max[2]) )
     {
       var bigcircle = make_bigcircle( this.dataset[0].max[0] );
@@ -161,7 +161,7 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
     var maxV = this.dataset[1].max[0];
     var minV = this.dataset[1].min[0];
-    alert ( ' minV=' + minV + ', maxV=' + maxV);
+    //alert ( ' minV=' + minV + ', maxV=' + maxV);
 
     for (var i = 0; i<this.nrows; i++) {
         var h = this.get_value ( i,0 );
@@ -171,10 +171,12 @@ jsViewHKL.prototype.makeTab4 = function ()  {
         if (!isNaN(V))  {
            if (Math.abs(l)<0.000001)  {
               //draw circle at (h,k) with radius ~ math.log10(V)
-              make_HKdot(h,k,V,minV,maxV);
-              make_HKdot(-h,-k,V,minV,maxV);
-              make_HKdot(-h,k,V,minV,maxV);
-              make_HKdot(h,-k,V,minV,maxV);
+              make_HKdot (h,k,V,maxV);
+              make_HKdot (-h,-k,V,maxV);
+              make_HKdot (-h,k,V,maxV);
+              make_HKdot (h,-k,V,maxV);
+
+
           }
         }
     }
