@@ -95,11 +95,11 @@ function erf(x){
   function make_HKdot (h,k,V, maxV) {
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
-      maxRad = (this.Hsep+this.Vsep)/4;
+      maxRad = (this.Hsep+this.Vsep)/5.0;
       var x = 350+(h*this.Hsep);
       var y = 325+(k*this.Vsep);
 
-      ithresh   = 0.75;
+      ithresh   = 1.0;
       vcontrast = 0.5;
       rmin      = 1;
       rmax      = maxRad;

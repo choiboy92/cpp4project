@@ -25,6 +25,8 @@ function jsViewHKL()  {
 
   this.numberMissing = []; // length will be equal to the number of columns
 
+  this.tab3_maxNrows = 100;
+
 }
 
 jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
