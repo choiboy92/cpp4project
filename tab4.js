@@ -140,20 +140,9 @@ function erf(x){
 
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
-    tab4.innerHTML ='<canvas id="hklzone" width="700" height="650">'+
-    'Use a compatible browser</canvas><br/>';
-    /*if ( this.dataset[0].max[0]>(this.dataset[0].max[1]||this.dataset[0].max[2]) )
-    {
-      var bigcircle = make_bigcircle( this.dataset[0].max[0] );
-    }
-    else if ( this.dataset[0].max[1]>(this.dataset[0].max[0]||this.dataset[0].max[2]) )
-    {
-      var bigcircle = make_bigcircle( this.dataset[0].max[1] );
-    }
-    else if ( this.dataset[0].max[2]>(this.dataset[0].max[0]||this.dataset[0].max[1]) )
-    {
-      var bigcircle = make_bigcircle( this.dataset[0].max[2] );
-  }*/
+    tab4.innerHTML ='<canvas id="hklzone" width="700" height="650" >'+
+    'Use a compatible browser</canvas><br>';
+
     var bigcircle = make_bigcircle( this.dataset[0].max[0], this.dataset[0].max[1] );
     var ver_arrow = Vdraw_arrow( this.dataset[0].col_labels[1] );
     var hrz_arrow = Hdraw_arrow( this.dataset[0].col_labels[0] );
@@ -163,6 +152,30 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     var minV = this.dataset[1].min[0];
     //alert ( ' minV=' + minV + ', maxV=' + maxV);
 
+    var HK_button = document.createElement ('button');
+    var HL_button = document.createElement ('button');
+    var KL_button = document.createElement ('button');
+    tab4.appendChild( HK_button );
+    tab4.appendChild( HL_button );
+    tab4.appendChild( KL_button );
+    $( HK_button ).button({
+        label: "h k 0"
+    });
+    $( HL_button ).button({
+        label: "h 0 l"
+    });
+    $( KL_button ).button({
+        label: "0 k l"
+    });
+    $( HK_button ).click( function(event) {
+        alert (' h k 0 has been clicked' );
+    });
+    $( HL_button ).click( function(event) {
+        alert (' h 0 l has been clicked' );
+    });
+    $( KL_button ).click( function(event) {
+        alert (' 0 k l has been clicked' );
+    });
     for (var i = 0; i<this.nrows; i++) {
         var h = this.get_value ( i,0 );
         var k = this.get_value ( i,1 );
@@ -175,8 +188,6 @@ jsViewHKL.prototype.makeTab4 = function ()  {
               make_HKdot (-h,-k,V,maxV);
               make_HKdot (-h,k,V,maxV);
               make_HKdot (h,-k,V,maxV);
-
-
           }
         }
     }

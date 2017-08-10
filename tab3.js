@@ -83,7 +83,7 @@ jsViewHKL.prototype.makeTab3 = function()  {
 
    var td_slide = document.createElement ('td');
    foot_table.appendChild(td_slide);
-   td_slide.setAttribute ('style','width:75%' );
+   td_slide.setAttribute ('style','width:80%' );
    slider = document.createElement ( 'div');
    td_slide.appendChild ( slider );
    (function(t){
@@ -95,20 +95,17 @@ jsViewHKL.prototype.makeTab3 = function()  {
          value: 1,
          slide: function( event, ui ) {
            t.makeTable3 ( ui.value-1,table3 );
-               if (ui.value != 1) {
-                   $(spinner).spinner( 'value', ui.value );
-               }
-           }
+           $(spinner).spinner( 'value', ui.value );
+         }
        });
      });
   }(this))
-  //tab3.appendChild (spacer);
 
   //Add spinner
   var td_spin = document.createElement ('td');
-  foot_table.appendChild (td_spin)
+  foot_table.appendChild (td_spin);
 
-  td_spin.setAttribute ('style','width:20%' );
+  td_spin.setAttribute ( 'style','width:auto' );
 
   var spinner = document.createElement ( 'input' );
   spinner.setAttribute ('id',"spinner" );
@@ -123,12 +120,13 @@ jsViewHKL.prototype.makeTab3 = function()  {
           step: 1,
           spin: function( event, ui ) {
             t.makeTable3 ( ui.value-1,table3 );
-                if (ui.value != 1) {
-                    $(slider).slider( 'value', ui.value );
-                }
-            }
+            $(slider).slider( 'value', ui.value );
+          },
+          change: function( event, ui )  {
+              t.makeTable3 ( spinner.value-1, table3 );
+              $(slider).slider( 'value', spinner.value );
+          }
       });
     });
   }(this))
-  //spinner.innerHTML = '<input id="spinner" name="spinner" value = "1">';
 }
