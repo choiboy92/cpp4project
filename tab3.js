@@ -204,19 +204,68 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
   $(label1).css({'white-space':'nowrap'});
   foot_row.appendChild ( label1 );
 
-  var td = document.createElement ('td');
+  var td1 = document.createElement ('td');
   var inputH = document.createElement ( 'input' );
   inputH.setAttribute ( 'style','width:40px' );
   inputH.setAttribute ( 'id','inputH' );
   inputH.setAttribute ( 'type','text' );
-  inputH.setAttribute ( 'value','12'  );
-  td.appendChild ( inputH );
-  foot_row.appendChild ( td );
+  inputH.setAttribute ( 'value', this.get_value( 0,0 ) );
+  td1.appendChild ( inputH );
+  foot_row.appendChild ( td1 );
 
+  var td2 = document.createElement ('td');
+  td2.innerHTML = 'K = ';
+  $(td2).css({'white-space':'nowrap'});
+  var inputK = document.createElement ( 'input' );
+  inputK.setAttribute ( 'style','width:40px' );
+  inputK.setAttribute ( 'id','inputK' );
+  inputK.setAttribute ( 'type','text' );
+  inputK.setAttribute ( 'value', this.get_value( 0,1 ) );
+  td2.appendChild ( inputK );
+  foot_row.appendChild ( td2 );
+
+  var td3 = document.createElement ('td');
+  td3.innerHTML = 'L = ';
+  $(td3).css({'white-space':'nowrap'});
+  var inputL = document.createElement ( 'input' );
+  inputL.setAttribute ( 'style','width:40px' );
+  inputL.setAttribute ( 'id','inputL' );
+  inputL.setAttribute ( 'type','text' );
+  inputL.setAttribute ( 'value', this.get_value( 0,2 )  );
+  td3.appendChild ( inputL );
+  foot_row.appendChild ( td3 );
+
+  (function(t){
+      $( function() {
+        function find_row(Hval, Kval, Lval) {
+          alert (''+Hval +', '+Kval +', '+Lval);
+          for (i = 0; i<t.nrows; i++)  {
+              if (Hval == t.get_value ( i,0 ) && Kval == t.get_value ( i,1 ) && Lval == t.get_value ( i,2 ))
+              {
+                  t.makeTable3 ( i, table3 );
+              }
+          }
+        }
+    });
+  }(this))
   (function(t){
     $("#inputH").keypress(function (e) {
        if (e.keyCode == 13) {
-         alert('You pressed enter!');
+         //alert('You pressed enter!');
+         /*if (inputH.value > t.dataset[0].max[0] || inputK.value > t.dataset[0].max[1] || inputL.value > t.dataset[0].max[2])  {
+             alert ('Data parameters are too large');
+         }*/
+         t.find_row(inputH.value, inputK.value, inputL.value);
+       }
+    });
+    $("#inputK").keypress(function (e) {
+       if (e.keyCode == 13) {
+         //alert('You pressed enter!');
+       }
+    });
+    $("#inputL").keypress(function (e) {
+       if (e.keyCode == 13) {
+         //alert('You pressed enter!');
        }
     });
   }(this))
