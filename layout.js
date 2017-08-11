@@ -157,8 +157,8 @@ jsViewHKL.prototype.makeTab2 = function()  {
           var complt   = Math.round(1000*(this.numreflections-num_miss)/this.numreflections)/10;
           var mean = Math.round(100*this.data_total[col_count]/this.count[col_count])/100;
           var mean_abs = Math.round(100*this.abs_data_total[col_count]/this.count[col_count])/100;
-          var lowres = null;
-          var highres = null;
+          var lowres = Math.round(100*this.s_squaredmin[col_count])/100;
+          var highres = Math.round(100*this.s_squaredmax[col_count])/100;
           make_summ_row((i+1),n,labels,types,min,max,num_miss,complt,mean,mean_abs,lowres,highres,table2);
           col_count++;
       }

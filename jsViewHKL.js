@@ -269,23 +269,66 @@ jsViewHKL.prototype.calculateStats = function()  {
   this.count = [];
   this.data_total = [];
   this.abs_data_total = [];
+  this.s_squaredmin = [];
+  this.s_squaredmax = [];
   for (var i=0;i<this.ncols;i++)  {
     this.numberMissing.push ( 0 );
     this.count.push( 0 );
     this.data_total.push( 0 );
     this.abs_data_total.push( 0 );
+    this.s_squaredmin.push( 0 );
+    this.s_squaredmax.push( 0 );
   }
 
-  for (var i=0;i<this.nrows;i++)  {
-    /*
-    var h = this.get_value ( i,0 );
-    var k = this.get_value ( i,1 );
-    var l = this.get_value ( i,2 );
-    var V = this.get_value ( i,3 );
-    if (l==0.0)  {
-      draw circle at (h,k) with radius ~ math.log10(V)
+  var col_count = 0;
+  for (var d = 0; d<this.ndif; d++) {
+    for(var q = 0; q<this.dataset[d].col_labels.length; q++)  {
+      var s_squared = [];
+      for (var r = 0; r < this.nrows; r++) {
+          if (!isNaN(this.get_value(r,col_count)))  {
+              var hold = this.dataset[d].dcell.split('&nbsp;');
+              var h = this.get_value(r,0);
+              var k = this.get_value(r,1);
+              var l = this.get_value(r,2);
+              var a = hold[0];
+              var b = hold[1];
+              var c = hold[2];
+              var alpha = hold[6];
+              var beta = hold[7];
+              var gamma = hold[8];
+
+              var c1 = Math.cos(Math.PI*alpha/180);
+              var c2 = Math.cos(Math.PI*beta/180);
+              var c3 = Math.cos(Math.PI*gamma/180);
+
+              var omega = 1/(1 -(c1*c1)-(c2*c2)-(c3*c3)+(2*c1*c2*c3));
+              var m11 = omega*(1-(c1*c1));
+              var m22 = omega*(1-(c2*c2));
+              var m33 = omega*(1-(c3*c3));
+              var m23;
+              var m31;
+              var m12;
+              var m32 = m23 = omega*((c2*c3) - c1);
+              var m13 = m31 = omega*((c3*c1) - c2);
+              var m21 = m12 = omega*((c1*c2) - c3);
+
+              var r1 = h/a;
+              var r2 = k/b;
+              var r3 = l/c;
+
+              s_squared.push( (m11*r1*r1) + (m22*r2*r2) + (m33*r3*r3) + (2*m23*r2*r3) + (2*m31*r3*r1) + (2*m12*r1*r2) );
+          }
+      }
+      this.s_squaredmin[col_count] = 1.0/Math.sqrt( Math.min.apply(null, s_squared) );
+      this.s_squaredmax[col_count] = 1.0/Math.sqrt( Math.max.apply(null, s_squared) );
+      //alert ('this.s_squaredmin['+col_count+'] = '+ this.s_squaredmin[col_count]);
+      //alert ('this.s_squaredmax['+col_count+'] = '+ this.s_squaredmax[col_count]);
+      col_count++;
     }
-    */
+  }
+
+
+  for (var i=0;i<this.nrows;i++)  {
     for (var j=0;j<this.ncols;j++)  {
       var r = this.get_value ( i,j );
       if (isNaN(r))  {

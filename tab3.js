@@ -58,11 +58,20 @@ jsViewHKL.prototype.makeTable3 = function ( firstRow,table3 )  {
   thead.appendChild ( trow );
   table3.appendChild ( thead );
 
-
+  var num_rows_shown;
+  //if the firstRow wanting to be shown is within 100 rows of the end of the file
+  //only that first row up to the end will be shown
+  if (firstRow > this.nrows-this.tab3_maxNrows+1)
+  {
+      num_rows_shown = this.nrows - firstRow;
+  }
+  else {
+      num_rows_shown = this.tab3_maxNrows;
+  }
 
   //add reflection data
   var tbody = document.createElement( 'tbody' );
-  for (var s = 0; s < 100; s++) {
+  for (var s = 0; s < num_rows_shown; s++) {
       var rownum = firstRow + s + 1;
       var ls_row = document.createElement ( 'tr' );
       var th = document.createElement ( 'th' );
@@ -235,19 +244,55 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
   td3.appendChild ( inputL );
   foot_row.appendChild ( td3 );
 
-  (function(t){
-      $( function() {
-        function find_row(Hval, Kval, Lval) {
-          alert (''+Hval +', '+Kval +', '+Lval);
-          for (i = 0; i<t.nrows; i++)  {
-              if (Hval == t.get_value ( i,0 ) && Kval == t.get_value ( i,1 ) && Lval == t.get_value ( i,2 ))
-              {
-                  t.makeTable3 ( i, table3 );
-              }
+/* linear search
+    function normsearch_row(Hval, Kval, Lval) {
+      alert (''+Hval +', '+Kval +', '+Lval);
+      for (i = 0; i<t.nrows; i++)  {
+          if (Hval == t.get_value ( i,0 ) && Kval == t.get_value ( i,1 ) && Lval == t.get_value ( i,2 ))
+          {
+              t.makeTable3 ( i, table3 );
+          }
+      }
+  }*/
+
+/*    binary search
+    function bubsearch_row(Hval, Kval, Lval)  {
+        var holder = t.nrows/2;
+        var bubbleH = t.get_value(holder,0);
+        var bubbleK = t.get_value(holder,1);
+        var bubbleL = t.get_value(holder,2);
+        while (inputH.value != bubbleH)  {
+            bubbleH = t.get_value(holder,0);
+            if (inputH.value < bubbleH) {
+                holder = Math.round( holder/2 );
+            }
+            else if (inputH.value > bubbleH) {
+                holder = Math.round( 3*holder/2 );
+            }
+        }
+        while (inputK.value != bubbleK)  {
+           bubbleK = t.get_value(holder,1);
+           if (inputK.value < bubbleK) {
+               holder = Math.round( holder/2 );
+           }
+           else if (inputK.value > bubbleK) {
+               holder = Math.round( 3*holder/2 );
+           }
+        }
+        while (inputL.value != bubbleL)  {
+          bubbleL = t.get_value(holder,2);
+          if (inputL.value < bubbleL) {
+              holder = Math.round( holder/2 );
+          }
+          else if (inputL.value > bubbleL) {
+              holder = Math.round( 3*holder/2 );
           }
         }
-    });
-  }(this))
+        alert (' final holder = ' + holder);
+        }
+    }
+*/
+
   (function(t){
     $("#inputH").keypress(function (e) {
        if (e.keyCode == 13) {
@@ -255,17 +300,43 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
          /*if (inputH.value > t.dataset[0].max[0] || inputK.value > t.dataset[0].max[1] || inputL.value > t.dataset[0].max[2])  {
              alert ('Data parameters are too large');
          }*/
-         t.find_row(inputH.value, inputK.value, inputL.value);
-       }
+         for (var i = 0; i<t.nrows; i++)  {
+             if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
+             {
+                 t.makeTable3 ( i, table3 );
+             }
+             if(i+1 == t.nrows)  {
+                 alert('Parameters entered not found');
+             }
+         }
+      }
     });
     $("#inputK").keypress(function (e) {
        if (e.keyCode == 13) {
          //alert('You pressed enter!');
+         for (i = 0; i<t.nrows; i++)  {
+             if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
+             {
+                 t.makeTable3 ( i, table3 );
+             }
+             if(i+1 == t.nrows)  {
+                 alert('Parameters entered not found');
+             }
+         }
        }
     });
     $("#inputL").keypress(function (e) {
        if (e.keyCode == 13) {
          //alert('You pressed enter!');
+         for (i = 0; i<t.nrows; i++)  {
+             if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
+             {
+                 t.makeTable3 ( i, table3 );
+             }
+             if(i+1 == t.nrows)  {
+                 alert('Parameters entered not found');
+             }
+         }
        }
     });
   }(this))
