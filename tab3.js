@@ -304,10 +304,12 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
              if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
              {
                  t.makeTable3 ( i, table3 );
+                 $(slider).slider( 'value', i+1 );
+                 $(spinner).spinner( 'value', i+1 );
              }
-             if(i+1 == t.nrows)  {
+             /*else if(i == t.nrows)  {
                  alert('Parameters entered not found');
-             }
+             }*/
          }
       }
     });
@@ -318,10 +320,12 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
              if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
              {
                  t.makeTable3 ( i, table3 );
+                 $(slider).slider( 'value', i +1);
+                 $(spinner).spinner( 'value', i +1);
              }
-             if(i+1 == t.nrows)  {
+             /*else if(i+1 == t.nrows)  {
                  alert('Parameters entered not found');
-             }
+             }*/
          }
        }
     });
@@ -332,10 +336,12 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
              if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
              {
                  t.makeTable3 ( i, table3 );
+                 $(slider).slider( 'value', i+1 );
+                 $(spinner).spinner( 'value', i+1 );
              }
-             if(i+1 == t.nrows)  {
+             /*else if(i+1 == t.nrows)  {
                  alert('Parameters entered not found');
-             }
+             }*/
          }
        }
     });
