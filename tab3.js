@@ -255,43 +255,6 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
   td3.appendChild ( inputL );
   foot_row.appendChild ( td3 );
 
-/*    binary search
-    function bubsearch_row(Hval, Kval, Lval)  {
-        var holder = t.nrows/2;
-        var bubbleH = t.get_value(holder,0);
-        var bubbleK = t.get_value(holder,1);
-        var bubbleL = t.get_value(holder,2);
-        while (inputH.value != bubbleH)  {
-            bubbleH = t.get_value(holder,0);
-            if (inputH.value < bubbleH) {
-                holder = Math.round( holder/2 );
-            }
-            else if (inputH.value > bubbleH) {
-                holder = Math.round( 3*holder/2 );
-            }
-        }
-        while (inputK.value != bubbleK)  {
-           bubbleK = t.get_value(holder,1);
-           if (inputK.value < bubbleK) {
-               holder = Math.round( holder/2 );
-           }
-           else if (inputK.value > bubbleK) {
-               holder = Math.round( 3*holder/2 );
-           }
-        }
-        while (inputL.value != bubbleL)  {
-          bubbleL = t.get_value(holder,2);
-          if (inputL.value < bubbleL) {
-              holder = Math.round( holder/2 );
-          }
-          else if (inputL.value > bubbleL) {
-              holder = Math.round( 3*holder/2 );
-          }
-        }
-        alert (' final holder = ' + holder);
-        }
-    }
-*/
 
   (function(t){
     $("#inputH").keypress(function (e) {

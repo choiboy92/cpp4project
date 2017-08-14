@@ -10,7 +10,7 @@ function make_bigcircle ( Hmax_data, Vmax_data )  {
     this.Hsep = 300/Hmax_data;
     this.Vsep = 300/Vmax_data;
     ctx.beginPath();
-    ctx.arc(350,325,307,0, Math.PI*2, 1);
+    ctx.arc(350,325,310,0, Math.PI*2, 1);
     ctx.stroke();
     ctx.closePath();
 }
@@ -146,16 +146,18 @@ function erf(x){
   }
 
 
-/*  function add_options ()  {
-      for (var z = 0; z < this.ndif; z++) {
+jsViewHKL.prototype.add_options =  function () {
+      var cnt = 1;
+      for (var z = 1; z < this.ndif; z++) {
           for (var b = 0; b < this.dataset[z].col_labels.length; b++) {
-              var holder = document.createElement('option');
+              holder = document.createElement('option');
+              holder.setAttribute('value', cnt);
               holder.innerHTML = this.dataset[z].col_labels[b];
-              alert(this.dataset[z].col_labels[b]);
-              V_select.appendChild(holder);
+              this.V_select.appendChild(holder);
+              cnt++;
           }
       }
-  }*/
+  }
 
 
 jsViewHKL.prototype.makeTab4 = function ()  {
@@ -168,25 +170,10 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
     this.V_val = 3;
 
-    var maxV = this.dataset[1].max[0];
-    var minV = this.dataset[1].min[0];
-    //alert ( ' minV=' + minV + ', maxV=' + maxV);
-
+    //Make buttons
     var HK_button = document.createElement ('button');
     var HL_button = document.createElement ('button');
     var KL_button = document.createElement ('button');
-    var V_select  = document.createElement ('select');
-    var cnt = 1;
-    for (var z = 1; z < this.ndif; z++) {
-        for (var b = 0; b < this.dataset[z].col_labels.length; b++) {
-            holder = document.createElement('option');
-            holder.setAttribute('value', cnt);
-            holder.innerHTML = this.dataset[z].col_labels[b];
-            V_select.appendChild(holder);
-            cnt++;
-        }
-    }
-    tab4.appendChild( V_select  );
     tab4.appendChild( HK_button );
     tab4.appendChild( HL_button );
     tab4.appendChild( KL_button );
@@ -200,8 +187,15 @@ jsViewHKL.prototype.makeTab4 = function ()  {
         label: "0 k l"
     });
 
+    //implement selectMenu
+    this.V_select  = document.createElement ('select');
+    this.add_options();
+    tab4.appendChild( this.V_select  );
+
     function draw_spots ( t )  {
-      var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
+      var maxV = t.max[t.V_val];
+      var minV = t.min[t.V_val];
+      var bigcircle = make_bigcircle( t.max[0], t.max[1] );
       var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
       var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
       for (var i = 0; i<t.nrows; i++) {
@@ -223,10 +217,12 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
 
     (function(t){
-        $( V_select ).selectmenu({
+        $( t.V_select ).selectmenu({
             select: function(event,ui)  {
                 t.V_val = 2+ parseInt(ui.item.value);
-                var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
+                var maxV = t.max[t.V_val];
+                var minV = t.min[t.V_val];
+                var bigcircle = make_bigcircle( t.max[0], t.max[1] );
                 var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
                 var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
                 for (var i = 0; i<t.nrows; i++) {
@@ -253,7 +249,9 @@ jsViewHKL.prototype.makeTab4 = function ()  {
       draw_spots ( t );
     });
     $( HL_button ).click( function(event) {
-        var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[2] );
+        var maxV = t.max[t.V_val];
+        var minV = t.min[t.V_val];
+        var bigcircle = make_bigcircle( t.max[0], t.max[2] );
         var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
         var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
         for (var i = 0; i<t.nrows; i++) {
@@ -273,7 +271,9 @@ jsViewHKL.prototype.makeTab4 = function ()  {
         }
     });
     $( KL_button ).click( function(event) {
-        var bigcircle = make_bigcircle( t.dataset[0].max[1], t.dataset[0].max[2] );
+        var maxV = t.max[t.V_val];
+        var minV = t.min[t.V_val];
+        var bigcircle = make_bigcircle( t.max[1], t.max[2] );
         var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
         var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
         for (var i = 0; i<t.nrows; i++) {

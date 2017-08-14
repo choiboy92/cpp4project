@@ -20,6 +20,8 @@ function jsViewHKL()  {
   this.reflections = null;
   this.symm = [];
   this.dataset = [];
+  this.min = [];
+  this.max = [];
   this.syminf = [];
   this.historyfiles = [];
 
@@ -177,8 +179,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
               var dataset = {};
               dataset.col_labels = [];
               dataset.col_types  = [];
-              dataset.min        = [];
-              dataset.max        = [];
               this.dataset.push ( dataset );
           }
       }
@@ -237,8 +237,8 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           var x = col_array[4];
           this.dataset[x].col_labels.push ( col_array[0] );
           this.dataset[x].col_types.push ( col_array[1] );
-          this.dataset[x].min.push ( col_array[2] );
-          this.dataset[x].max.push ( col_array[3] );
+          this.min.push ( col_array[2] );
+          this.max.push ( col_array[3] );
       }
   }
 
