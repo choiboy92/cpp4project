@@ -2,10 +2,17 @@
 function make_bigcircle ( Hmax_data, Vmax_data )  {
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(10, 10, 10, 1)';
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     this.Hsep = 300/Hmax_data;
     this.Vsep = 300/Vmax_data;
+    ctx.beginPath();
     ctx.arc(350,325,307,0, Math.PI*2, 1);
     ctx.stroke();
+    ctx.closePath();
 }
 
 function Hdraw_arrow ( col_labels )  {
@@ -138,14 +145,23 @@ function erf(x){
       ctx.closePath();
   }
 
+
+/*  function add_options ()  {
+      for (var z = 0; z < this.ndif; z++) {
+          for (var b = 0; b < this.dataset[z].col_labels.length; b++) {
+              var holder = document.createElement('option');
+              holder.innerHTML = this.dataset[z].col_labels[b];
+              alert(this.dataset[z].col_labels[b]);
+              V_select.appendChild(holder);
+          }
+      }
+  }*/
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
     tab4.innerHTML ='<canvas id="hklzone" width="700" height="650" >'+
     'Use a compatible browser</canvas><br>';
+    make_bigcircle();
 
-    var bigcircle = make_bigcircle( this.dataset[0].max[0], this.dataset[0].max[1] );
-    var ver_arrow = Vdraw_arrow( this.dataset[0].col_labels[1] );
-    var hrz_arrow = Hdraw_arrow( this.dataset[0].col_labels[0] );
     //alert('Sep = '+ sep);
 
     var maxV = this.dataset[1].max[0];
@@ -155,6 +171,18 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     var HK_button = document.createElement ('button');
     var HL_button = document.createElement ('button');
     var KL_button = document.createElement ('button');
+    var V_select  = document.createElement ('select');
+    var cnt = 1;
+    for (var z = 1; z < this.ndif; z++) {
+        for (var b = 0; b < this.dataset[z].col_labels.length; b++) {
+            holder = document.createElement('option');
+            holder.setAttribute('value', cnt);
+            holder.innerHTML = this.dataset[z].col_labels[b];
+            V_select.appendChild(holder);
+            cnt++;
+        }
+    }
+    tab4.appendChild( V_select  );
     tab4.appendChild( HK_button );
     tab4.appendChild( HL_button );
     tab4.appendChild( KL_button );
@@ -167,29 +195,90 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     $( KL_button ).button({
         label: "0 k l"
     });
+    (function(t){
+        $( V_select ).selectmenu({
+            select: function(event,ui)  {
+                V_val = 2+ parseInt(ui.item.value);
+                var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
+                var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
+                var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+                for (var i = 0; i<t.nrows; i++) {
+                    var h = t.get_value ( i,0 );
+                    var k = t.get_value ( i,1 );
+                    var l = t.get_value ( i,2 );
+                    var V = t.get_value ( i,V_val );
+                    if (!isNaN(V))  {
+                       if (Math.abs(l)<0.000001)  {
+                          //draw circle at (h,k) with radius ~ math.log10(V)
+                          make_HKdot (h,k,V,maxV);
+                          make_HKdot (-h,-k,V,maxV);
+                          make_HKdot (-h,k,V,maxV);
+                          make_HKdot (h,-k,V,maxV);
+                      }
+                    }
+                }
+            }
+        });
     $( HK_button ).click( function(event) {
-        alert (' h k 0 has been clicked' );
+        var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
+        var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
+        var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+        for (var i = 0; i<t.nrows; i++) {
+            var h = t.get_value ( i,0 );
+            var k = t.get_value ( i,1 );
+            var l = t.get_value ( i,2 );
+            var V = t.get_value ( i,V_val );
+            if (!isNaN(V))  {
+               if (Math.abs(l)<0.000001)  {
+                  //draw circle at (h,k) with radius ~ math.log10(V)
+                  make_HKdot (h,k,V,maxV);
+                  make_HKdot (-h,-k,V,maxV);
+                  make_HKdot (-h,k,V,maxV);
+                  make_HKdot (h,-k,V,maxV);
+              }
+            }
+        }
     });
     $( HL_button ).click( function(event) {
-        alert (' h 0 l has been clicked' );
+        var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[2] );
+        var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
+        var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+        for (var i = 0; i<t.nrows; i++) {
+            var h = t.get_value ( i,0 );
+            var k = t.get_value ( i,1 );
+            var l = t.get_value ( i,2 );
+            var V = t.get_value ( i,V_val );
+            if (!isNaN(V))  {
+               if (Math.abs(k)<0.000001)  {
+                  //draw circle at (h,k) with radius ~ math.log10(V)
+                  make_HKdot (h,l,V,maxV);
+                  make_HKdot (-h,-l,V,maxV);
+                  make_HKdot (-h,l,V,maxV);
+                  make_HKdot (h,-l,V,maxV);
+              }
+            }
+        }
     });
     $( KL_button ).click( function(event) {
-        alert (' 0 k l has been clicked' );
-    });
-    for (var i = 0; i<this.nrows; i++) {
-        var h = this.get_value ( i,0 );
-        var k = this.get_value ( i,1 );
-        var l = this.get_value ( i,2 );
-        var V = this.get_value ( i,3 );
-        if (!isNaN(V))  {
-           if (Math.abs(l)<0.000001)  {
-              //draw circle at (h,k) with radius ~ math.log10(V)
-              make_HKdot (h,k,V,maxV);
-              make_HKdot (-h,-k,V,maxV);
-              make_HKdot (-h,k,V,maxV);
-              make_HKdot (h,-k,V,maxV);
-          }
+        var bigcircle = make_bigcircle( t.dataset[0].max[1], t.dataset[0].max[2] );
+        var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
+        var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
+        for (var i = 0; i<t.nrows; i++) {
+            var h = t.get_value ( i,0 );
+            var k = t.get_value ( i,1 );
+            var l = t.get_value ( i,2 );
+            var V = t.get_value ( i,V_val );
+            if (!isNaN(V))  {
+               if (Math.abs(h)<0.000001)  {
+                  //draw circle at (h,k) with radius ~ math.log10(V)
+                  make_HKdot (k,l,V,maxV);
+                  make_HKdot (-k,-l,V,maxV);
+                  make_HKdot (-k,l,V,maxV);
+                  make_HKdot (k,-l,V,maxV);
+              }
+            }
         }
-    }
+    });
+}(this))
 
 }

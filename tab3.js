@@ -156,6 +156,9 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
          slide: function( event, ui ) {
            t.makeTable3 ( ui.value-1,table3 );
            $(spinner).spinner( 'value', ui.value );
+           inputH.value = t.get_value(ui.value-1,0);
+           inputK.value = t.get_value(ui.value-1,1);
+           inputL.value = t.get_value(ui.value-1,2);
          }
        });
      });
@@ -188,10 +191,16 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
           spin: function( event, ui ) {
             t.makeTable3 ( ui.value-1,table3 );
             $(slider).slider( 'value', ui.value );
+            inputH.value = t.get_value(ui.value-1,0);
+            inputK.value = t.get_value(ui.value-1,1);
+            inputL.value = t.get_value(ui.value-1,2);
           },
           change: function( event, ui )  {
               t.makeTable3 ( spinner.value-1, table3 );
               $(slider).slider( 'value', spinner.value );
+              inputH.value = t.get_value(spinner.value-1,0);
+              inputK.value = t.get_value(spinner.value-1,1);
+              inputL.value = t.get_value(spinner.value-1,2);
           }
       });
     });
@@ -201,7 +210,9 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
          var val = $("#spinner").spinner( "value" );
          t.makeTable3 ( val-1, table3 );
          $(slider).slider( 'value', val );
- //          alert('You pressed enter!');
+         inputH.value = t.get_value(val-1,0);
+         inputK.value = t.get_value(val-1,1);
+         inputL.value = t.get_value(val-1,2);
        }
     });
 
@@ -243,17 +254,6 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
   inputL.setAttribute ( 'value', this.get_value( 0,2 )  );
   td3.appendChild ( inputL );
   foot_row.appendChild ( td3 );
-
-/* linear search
-    function normsearch_row(Hval, Kval, Lval) {
-      alert (''+Hval +', '+Kval +', '+Lval);
-      for (i = 0; i<t.nrows; i++)  {
-          if (Hval == t.get_value ( i,0 ) && Kval == t.get_value ( i,1 ) && Lval == t.get_value ( i,2 ))
-          {
-              t.makeTable3 ( i, table3 );
-          }
-      }
-  }*/
 
 /*    binary search
     function bubsearch_row(Hval, Kval, Lval)  {
