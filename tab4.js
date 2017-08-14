@@ -156,6 +156,8 @@ function erf(x){
           }
       }
   }*/
+
+
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
     tab4.innerHTML ='<canvas id="hklzone" width="700" height="650" >'+
@@ -163,6 +165,8 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     make_bigcircle();
 
     //alert('Sep = '+ sep);
+
+    this.V_val = 3;
 
     var maxV = this.dataset[1].max[0];
     var minV = this.dataset[1].min[0];
@@ -195,10 +199,33 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     $( KL_button ).button({
         label: "0 k l"
     });
+
+    function draw_spots ( t )  {
+      var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
+      var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
+      var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+      for (var i = 0; i<t.nrows; i++) {
+          var h = t.get_value ( i,0 );
+          var k = t.get_value ( i,1 );
+          var l = t.get_value ( i,2 );
+          var V = t.get_value ( i,t.V_val );
+          if (!isNaN(V))  {
+             if (Math.abs(l)<0.000001)  {
+                //draw circle at (h,k) with radius ~ math.log10(V)
+                make_HKdot (h,k,V,maxV);
+                make_HKdot (-h,-k,V,maxV);
+                make_HKdot (-h,k,V,maxV);
+                make_HKdot (h,-k,V,maxV);
+            }
+          }
+      }
+    }
+
+
     (function(t){
         $( V_select ).selectmenu({
             select: function(event,ui)  {
-                V_val = 2+ parseInt(ui.item.value);
+                t.V_val = 2+ parseInt(ui.item.value);
                 var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
                 var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
                 var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
@@ -206,7 +233,7 @@ jsViewHKL.prototype.makeTab4 = function ()  {
                     var h = t.get_value ( i,0 );
                     var k = t.get_value ( i,1 );
                     var l = t.get_value ( i,2 );
-                    var V = t.get_value ( i,V_val );
+                    var V = t.get_value ( i,t.V_val );
                     if (!isNaN(V))  {
                        if (Math.abs(l)<0.000001)  {
                           //draw circle at (h,k) with radius ~ math.log10(V)
@@ -219,25 +246,11 @@ jsViewHKL.prototype.makeTab4 = function ()  {
                 }
             }
         });
+
+    draw_spots ( t );
+
     $( HK_button ).click( function(event) {
-        var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[1] );
-        var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
-        var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-        for (var i = 0; i<t.nrows; i++) {
-            var h = t.get_value ( i,0 );
-            var k = t.get_value ( i,1 );
-            var l = t.get_value ( i,2 );
-            var V = t.get_value ( i,V_val );
-            if (!isNaN(V))  {
-               if (Math.abs(l)<0.000001)  {
-                  //draw circle at (h,k) with radius ~ math.log10(V)
-                  make_HKdot (h,k,V,maxV);
-                  make_HKdot (-h,-k,V,maxV);
-                  make_HKdot (-h,k,V,maxV);
-                  make_HKdot (h,-k,V,maxV);
-              }
-            }
-        }
+      draw_spots ( t );
     });
     $( HL_button ).click( function(event) {
         var bigcircle = make_bigcircle( t.dataset[0].max[0], t.dataset[0].max[2] );
@@ -247,7 +260,7 @@ jsViewHKL.prototype.makeTab4 = function ()  {
             var h = t.get_value ( i,0 );
             var k = t.get_value ( i,1 );
             var l = t.get_value ( i,2 );
-            var V = t.get_value ( i,V_val );
+            var V = t.get_value ( i,t.V_val );
             if (!isNaN(V))  {
                if (Math.abs(k)<0.000001)  {
                   //draw circle at (h,k) with radius ~ math.log10(V)
@@ -267,7 +280,7 @@ jsViewHKL.prototype.makeTab4 = function ()  {
             var h = t.get_value ( i,0 );
             var k = t.get_value ( i,1 );
             var l = t.get_value ( i,2 );
-            var V = t.get_value ( i,V_val );
+            var V = t.get_value ( i,t.V_val );
             if (!isNaN(V))  {
                if (Math.abs(h)<0.000001)  {
                   //draw circle at (h,k) with radius ~ math.log10(V)
