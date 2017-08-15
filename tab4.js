@@ -157,14 +157,65 @@ jsViewHKL.prototype.add_options =  function () {
               cnt++;
           }
       }
-  }
+}
 
-  function draw_HKspots ( t )  {
-    var maxV = t.max[t.V_val];
-    var bigcircle = make_bigcircle( t.max[0], t.max[1] );
-    var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
-    var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-    for (var i = 0; i<t.nrows; i++) {
+
+function draw_HKspots ( t )  {
+  var maxV = t.max[t.V_val];
+  var bigcircle = make_bigcircle( t.max[0], t.max[1] );
+  var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
+  var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+  for (var i = 0; i<t.nrows; i++)  {
+    var h = t.get_value ( i,0 );
+    var k = t.get_value ( i,1 );
+    var l = t.get_value ( i,2 );
+    var V = t.get_value ( i,t.V_val );
+    for (var j=0;j<t.symm_matrix.length;j++)  {
+      var h1 = t.symm_matrix[j][0][0]*h + t.symm_matrix[j][0][1]*k + t.symm_matrix[j][0][2]*l;
+      var k1 = t.symm_matrix[j][1][0]*h + t.symm_matrix[j][1][1]*k + t.symm_matrix[j][1][2]*l;
+      var l1 = t.symm_matrix[j][2][0]*h + t.symm_matrix[j][2][1]*k + t.symm_matrix[j][2][2]*l;
+      if (Math.abs(l1)<0.000001)  {
+        make_dot ( h1,k1,V,maxV );
+      }
+    }
+  }
+}
+
+
+function draw_spots ( t,zoneKey,zoneHeight )  {
+  var maxV = t.max[t.V_val];
+  var bigcircle = make_bigcircle( t.max[0], t.max[1] );
+  var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
+  var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+  for (var i = 0; i<t.nrows; i++)  {
+    var h = t.get_value ( i,0 );
+    var k = t.get_value ( i,1 );
+    var l = t.get_value ( i,2 );
+    var V = t.get_value ( i,t.V_val );
+    var T = t.symm_matrix[j];
+    for (var j=0;j<t.symm_matrix.length;j++)  {
+      var h1 = T[0][0]*h + T[j][0][1]*k + T[j][0][2]*l;
+      var k1 = T[1][0]*h + T[j][1][1]*k + T[j][1][2]*l;
+      var l1 = T[2][0]*h + T[j][2][1]*k + T[j][2][2]*l;
+      switch (zoneKey)  {
+        case 0 : if (Math.abs(l1-zoneHeight)<0.000001)
+                   make_dot ( h1,k1,V,maxV );
+                break;
+        case 1 : if (Math.abs(k1-zoneHeight)<0.000001)
+                   make_dot ( h1,l1,V,maxV );
+                break;
+        case 2 : if (Math.abs(h1-zoneHeight)<0.000001)
+                   make_dot ( k1,l1,V,maxV );
+                break;
+        default: ;
+      }
+    }
+  }
+}
+
+
+
+/*
         //var h = t.get_value ( i,0 );
         //var k = t.get_value ( i,1 );
         var l = t.get_value ( i,2 );
@@ -172,10 +223,10 @@ jsViewHKL.prototype.add_options =  function () {
         if (!isNaN(V))  {
            if (Math.abs(l)<0.000001)  {
               //draw circle at (h,k) with radius ~ math.log10(V)
-              /*make_dot (h,k,V,maxV);
-              make_dot (-h,-k,V,maxV);
-              make_dot (-h,k,V,maxV);
-              make_dot (h,-k,V,maxV);*/
+              //make_dot (h,k,V,maxV);
+              //make_dot (-h,-k,V,maxV);
+              //make_dot (-h,k,V,maxV);
+              //make_dot (h,-k,V,maxV);
               for (var q = 0; q<t.symm.length; q++)  {
                   make_dot(t.hkl_corrected[0][(q*t.nrows)+i],t.hkl_corrected[1][(q*t.nrows)+i], V,maxV)
               }
@@ -183,6 +234,7 @@ jsViewHKL.prototype.add_options =  function () {
         }
     }
   }
+*/
 
   function draw_HLspots (t)  {
       var maxV = t.max[t.V_val];
@@ -244,6 +296,24 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
     this.V_val = 3;
 
+    var fieldset = document.createElement ( 'fieldset' );
+    tab4.appendChild ( fieldset );
+    fieldset.setAttribute ( 'style','width:300px' );
+    $('<legend>Select a plane:</legend>' +
+      '<label for="radio-1">H K 0</label>' +
+      '<input type="radio" name="radio-1" id="radio-1" checked="checked">' +
+      '<label for="radio-2">H 0 L</label>' +
+      '<input type="radio" name="radio-1" id="radio-2">' +
+      '<label for="radio-3">0 K L</label>' +
+      '<input type="radio" name="radio-1" id="radio-3">' ).appendTo ( fieldset );
+
+    $( "input[type='radio']" ).checkboxradio();
+
+    $('#radio-1').click(function(){
+      alert ( ' 1 cliecked');
+    });
+
+    /*
     //Make buttons
     var HK_button = document.createElement ('button');
     //$('<input type="radio">');
@@ -263,13 +333,12 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     $( KL_button ).button({
         label: "0 k l"
     });
+    */
 
     //implement selectMenu
     this.V_select  = document.createElement ('select');
     this.add_options();
     tab4.appendChild( this.V_select  );
-
-
 
     (function(t){
         $( t.V_select ).selectmenu({

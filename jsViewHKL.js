@@ -31,6 +31,8 @@ function jsViewHKL()  {
   this.historyfiles = [];
   this.hkl_corrected = [];
 
+  this.symm_matrix = [];
+
   this.numberMissing = []; // length will be equal to the number of columns
 
   this.tab3_maxNrows = 100;
@@ -38,6 +40,80 @@ function jsViewHKL()  {
 }
 
 jsViewHKL.prototype.calc_symm_hkl = function ()  {
+
+  this.symm_matrix = [];
+  for (var t=0; t<this.symm.length; t++)  {
+    var T = [[0,0,0],[0,0,0],[0,0,0]];
+    for (var n=0; n<3; n++)  {
+      var p = 0;
+      if (this.symm[t][n].startsWith('X'))
+        T[n][0] = 1;
+      do {
+        p = this.symm[t][n].indexOf('+X',p);
+        if (p>=0) {
+          T[n][0] += 1;
+          p++;
+        }
+      } while (p>=0);
+      do {
+        p = this.symm[t][n].indexOf('-X',p);
+        if (p>=0)  {
+          T[n][0] -= 1;
+          p++;
+        }
+      } while (p>=0);
+      p = 0;
+      if (this.symm[t][n].startsWith('Y'))
+        T[n][1] = 1;
+      do {
+        p = this.symm[t][n].indexOf('+Y',p);
+        if (p>=0) {
+          T[n][1] += 1;
+          p++;
+        }
+      } while (p>=0);
+      do {
+        p = this.symm[t][n].indexOf('-Y',p);
+        if (p>=0)  {
+          T[n][1] -= 1;
+          p++;
+        }
+      } while (p>=0);
+      p = 0;
+      if (this.symm[t][n].startsWith('Z'))
+        T[n][2] = 1;
+      do {
+        p = this.symm[t][n].indexOf('+Z',p);
+        if (p>=0) {
+          T[n][2] += 1;
+          p++;
+        }
+      } while (p>=0);
+      do {
+        p = this.symm[t][n].indexOf('-Z',p);
+        if (p>=0)  {
+          T[n][2] -= 1;
+          p++;
+        }
+      } while (p>=0);
+    }
+
+    var similar = false;
+    for (var k=0;(k<this.symm_matrix.length) && (!similar);k++)  {
+      similar = true;
+      for (var i=0;(i<3) && similar;i++)
+        for (var j=0;(j<3) && similar;j++)
+          similar = (T[i][j] == this.symm_matrix[k][i][j]);
+    }
+
+    if (!similar)
+      this.symm_matrix.push ( T );
+
+//alert ( ' ' + this.symm[t] + '\n' + T[0] + '\n' + T[1] + '\n' + T[2] );
+
+  }
+
+/*
     for (var j=0;j<3;j++)  {
         this.hkl_corrected[j]= [];
     }
@@ -57,6 +133,8 @@ jsViewHKL.prototype.calc_symm_hkl = function ()  {
             }
         }
     }
+  */
+
 }
 
 jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
@@ -146,7 +224,7 @@ jsViewHKL.prototype.Load = function ( url_str )  {
 
 jsViewHKL.prototype.processData = function ( header,reflections )  {
 
-  //alert ( 'header=\n' + header.join('\n') );
+  alert ( 'header=\n' + header.join('\n') );
 
   this.reflections = reflections;
 
@@ -188,7 +266,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           this.spacegroup = this.syminf.slice(x_start,x_end).join(" ");
       }
       else if (key == 'symm')  {
-            this.symm.push( hlist.slice(1).join('').split(","));
+            this.symm.push( hlist.slice(1).join('').split(",") );
       }
       else if (key == 'reso')  {
           var reso = hlist.slice(1).join("");
