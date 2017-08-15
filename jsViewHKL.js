@@ -1,5 +1,28 @@
 
 
+/*
+ *  =================================================================
+ *
+ *    25.06.17   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  js-client/cofe.communication.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  validateUserData()
+ *       ~~~~~~~~~  makeCommErrorMessage()
+ *                  serverCommand()
+ *                  serverRequest()
+ *
+ *
+ *
+ *  =================================================================
+ *
+ */
+
+
 function jsViewHKL()  {
 
   this.method  = 'GET';
