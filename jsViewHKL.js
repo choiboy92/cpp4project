@@ -52,7 +52,7 @@ function jsViewHKL()  {
   this.dataset = [];
   this.syminf = [];
   this.historyfiles = [];
-  this.hkl_corrected = [];
+  //this.hkl_corrected = [];
 
   this.symm_matrix = [];
 
@@ -135,29 +135,6 @@ jsViewHKL.prototype.calc_symm_hkl = function ()  {
 //alert ( ' ' + this.symm[t] + '\n' + T[0] + '\n' + T[1] + '\n' + T[2] );
 
   }
-
-/*
-    for (var j=0;j<3;j++)  {
-        this.hkl_corrected[j]= [];
-    }
-
-    for (var t=0; t<this.symm.length; t++)  {
-        for (var z=0; z<3; z++) {
-            var symm = this.symm[t][z];
-            if (symm.startsWith("-") == true)  {
-                for (var q=0; q<this.nrows; q++)  {
-                    this.hkl_corrected[z].push (this.get_value(q,z)*(-1));
-                }
-            }
-            else  {
-                for (var r=0; r<this.nrows; r++)  {
-                    this.hkl_corrected[z].push (this.get_value(r,z));
-                }
-            }
-        }
-    }
-  */
-
 }
 
 jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
@@ -166,10 +143,6 @@ jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
   this.method  = 'POST';
   this.sceneId = sceneId;
 
-  // I moved this.makeLayout from the jsViewHKL.Init function
-  // and put it in the load so that variables dont have to be
-  // declared globally and it can be placed in the table
-  //this.makeLayout(data_url_str, cell);
 }
 
 jsViewHKL.prototype.Load = function ( url_str )  {
@@ -264,7 +237,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           this.ncols          = x[0];
           this.numreflections = x[1];
           this.nrows          = reflections.byteLength/(4*this.ncols);
-          //alert ( ' ' + reflections.byteLength + ', ' + this.ncols + ', ' + this.nrows );
       }
       else if (key == 'cell')  {
           this.cell = hlist.slice(1).join(" ");
@@ -292,7 +264,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
             this.symm.push( hlist.slice(1).join('').split(",") );
       }
       else if (key == 'reso')  {
-          var reso = hlist.slice(1).join("");
+          var reso = hlist.slice(1).filter(whiteSpaceFilter);
 
           this.lowreso = 1.0/Math.sqrt(reso[0]);
           this.highreso = 1.0/Math.sqrt(reso[1]);
@@ -368,23 +340,6 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
   }
 
   this.calc_symm_hkl ();
-/*
-  var S = "";
-  for (var i=0;i<22;i++)
-    S += reflections.getFloat32(i*4,this.endian) + ', ';
-  S += ' ***\n';
-  for (var i=22;i<44;i++)
-    S += reflections.getFloat32(i*4,this.endian) + ', ';
-
-  var n2 = reflections.byteLength/4;
-  var n1 = n2 - 22;
-  S += ' ###\n';
-  for (var i=n1;i<n2;i++)
-    S += reflections.getFloat32(i*4,this.endian) + ', ';
-*/
-
-  //alert ( S );
-
   this.calculateStats();
 
 }

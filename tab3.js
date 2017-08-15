@@ -9,36 +9,12 @@ var table = document.createElement ('table')
 
 jsViewHKL.prototype.makeTable3 = function ( firstRow,table3 )  {
 
-/*  -- old version
-  table3.innerHTML = '';
-  //make header row
-  var header = document.createElement ( 'thead' );
-  var trow = document.createElement ( 'tr' );
-  header.appendChild ( trow );
-  trow.innerHTML = '<th class="table-blue-vh"></th>';
-  table3.appendChild ( header );
-
-  var nn = 0;
-  var kk = [];
-  for (var n = 0; n < this.ndif; n++) {
-      for (var q =0; q<this.dataset[n].col_labels.length; q++) {
-          var th = document.createElement ( 'th' );
-          th.setAttribute ( 'class','table-blue-hh' );
-          th.innerHTML = this.dataset[n].col_labels[q];
-          trow.appendChild ( th );
-          nn++;
-      }
-  }
-*/
-
-
   table3.innerHTML = '';
 
   //make header row
   var thead = document.createElement ( 'thead' );
   var trow  = document.createElement ( 'tr' );
   trow.innerHTML = '<th class="table-blue-hh"></th>';
-//  trow.innerHTML = '<th></th>';
 
   for (var n = 0; n < this.ndif; n++) {
       for (var q =0; q<this.dataset[n].col_labels.length; q++) {
@@ -95,6 +71,8 @@ jsViewHKL.prototype.makeTable3 = function ( firstRow,table3 )  {
 }
 
 
+
+
 jsViewHKL.prototype.makeTab3 = function()  {
 
 /*
@@ -146,6 +124,7 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
    td_slide.setAttribute ('style','width:80%' );
    slider = document.createElement ( 'div');
    td_slide.appendChild ( slider );
+
    (function(t){
      $( function() {
        $( slider ).slider({
@@ -255,57 +234,40 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
   td3.appendChild ( inputL );
   foot_row.appendChild ( td3 );
 
+  //when enter is pressed, function
+  function ent_pressed (t)  {
+      for (var i = 0; i<t.nrows; i++)  {
+          if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
+          {
+              if (i > t.nrows-100) {
+                  t.makeTable3 ( t.nrows-100, table3 );
+              }
+              else {
+                  t.makeTable3 ( i, table3 );
+              }
+              $(slider).slider( 'value', i+1 );
+              $(spinner).spinner( 'value', i+1 );
+          }
+          /*else if(i == t.nrows)  {
+              alert('Parameters entered not found');
+          }*/
+      }
+  }
 
   (function(t){
     $("#inputH").keypress(function (e) {
        if (e.keyCode == 13) {
-         //alert('You pressed enter!');
-         /*if (inputH.value > t.dataset[0].max[0] || inputK.value > t.dataset[0].max[1] || inputL.value > t.dataset[0].max[2])  {
-             alert ('Data parameters are too large');
-         }*/
-         for (var i = 0; i<t.nrows; i++)  {
-             if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
-             {
-                 t.makeTable3 ( i, table3 );
-                 $(slider).slider( 'value', i+1 );
-                 $(spinner).spinner( 'value', i+1 );
-             }
-             /*else if(i == t.nrows)  {
-                 alert('Parameters entered not found');
-             }*/
-         }
+         ent_pressed(t);
       }
     });
     $("#inputK").keypress(function (e) {
        if (e.keyCode == 13) {
-         //alert('You pressed enter!');
-         for (i = 0; i<t.nrows; i++)  {
-             if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
-             {
-                 t.makeTable3 ( i, table3 );
-                 $(slider).slider( 'value', i +1);
-                 $(spinner).spinner( 'value', i +1);
-             }
-             /*else if(i+1 == t.nrows)  {
-                 alert('Parameters entered not found');
-             }*/
-         }
+         ent_pressed(t);
        }
     });
     $("#inputL").keypress(function (e) {
        if (e.keyCode == 13) {
-         //alert('You pressed enter!');
-         for (i = 0; i<t.nrows; i++)  {
-             if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
-             {
-                 t.makeTable3 ( i, table3 );
-                 $(slider).slider( 'value', i+1 );
-                 $(spinner).spinner( 'value', i+1 );
-             }
-             /*else if(i+1 == t.nrows)  {
-                 alert('Parameters entered not found');
-             }*/
-         }
+         ent_pressed(t);
        }
     });
   }(this))
