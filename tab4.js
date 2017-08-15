@@ -99,7 +99,7 @@ function erf(x){
 }
 
 
-  function make_HKdot (h,k,V, maxV) {
+  function make_dot (h,k,V, maxV) {
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
       maxRad = (this.Hsep+this.Vsep)/5.0;
@@ -159,6 +159,80 @@ jsViewHKL.prototype.add_options =  function () {
       }
   }
 
+  function draw_HKspots ( t )  {
+    var maxV = t.max[t.V_val];
+    var bigcircle = make_bigcircle( t.max[0], t.max[1] );
+    var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
+    var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+    for (var i = 0; i<t.nrows; i++) {
+        //var h = t.get_value ( i,0 );
+        //var k = t.get_value ( i,1 );
+        var l = t.get_value ( i,2 );
+        var V = t.get_value ( i,t.V_val );
+        if (!isNaN(V))  {
+           if (Math.abs(l)<0.000001)  {
+              //draw circle at (h,k) with radius ~ math.log10(V)
+              /*make_dot (h,k,V,maxV);
+              make_dot (-h,-k,V,maxV);
+              make_dot (-h,k,V,maxV);
+              make_dot (h,-k,V,maxV);*/
+              for (var q = 0; q<t.symm.length; q++)  {
+                  make_dot(t.hkl_corrected[0][(q*t.nrows)+i],t.hkl_corrected[1][(q*t.nrows)+i], V,maxV)
+              }
+          }
+        }
+    }
+  }
+
+  function draw_HLspots (t)  {
+      var maxV = t.max[t.V_val];
+      var bigcircle = make_bigcircle( t.max[0], t.max[2] );
+      var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
+      var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+      for (var i = 0; i<t.nrows; i++) {
+          //var h = t.get_value ( i,0 );
+          var k = t.get_value ( i,1 );
+          //var l = t.get_value ( i,2 );
+          var V = t.get_value ( i,t.V_val );
+          if (!isNaN(V))  {
+             if (Math.abs(k)<0.000001)  {
+                //draw circle at (h,k) with radius ~ math.log10(V)
+                /*make_dot (h,l,V,maxV);
+                make_dot (-h,-l,V,maxV);
+                make_dot (-h,l,V,maxV);
+                make_dot (h,-l,V,maxV);*/
+                for (var q = 0; q<t.symm.length; q++)  {
+                    make_dot(t.hkl_corrected[0][(q*t.nrows)+i],t.hkl_corrected[2][(q*t.nrows)+i], V, maxV)
+                }
+            }
+          }
+      }
+  }
+
+  function draw_KLspots (t)  {
+      var maxV = t.max[t.V_val];
+      var bigcircle = make_bigcircle( t.max[1], t.max[2] );
+      var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
+      var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
+      for (var i = 0; i<t.nrows; i++) {
+          var h = t.get_value ( i,0 );
+          //var k = t.get_value ( i,1 );
+          //var l = t.get_value ( i,2 );
+          var V = t.get_value ( i,t.V_val );
+          if (!isNaN(V))  {
+             if (Math.abs(h)<0.000001)  {
+                //draw circle at (h,k) with radius ~ math.log10(V)
+                /*make_dot (k,l,V,maxV);
+                make_dot (-k,-l,V,maxV);
+                make_dot (-k,l,V,maxV);
+                make_dot (k,-l,V,maxV);*/
+                for (var q = 0; q<t.symm.length; q++)  {
+                    make_dot(t.hkl_corrected[1][(q*t.nrows)+i],t.hkl_corrected[2][(q*t.nrows)+i], V,maxV)
+                }
+            }
+          }
+      }
+  }
 
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
@@ -172,11 +246,14 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
     //Make buttons
     var HK_button = document.createElement ('button');
+    //$('<input type="radio">');
     var HL_button = document.createElement ('button');
     var KL_button = document.createElement ('button');
     tab4.appendChild( HK_button );
     tab4.appendChild( HL_button );
     tab4.appendChild( KL_button );
+    //$HK_button.checkboxradio({label: "h k 0",icon: false});
+    //$(tab4).append( $HK_button );
     $( HK_button ).button({
         label: "h k 0"
     });
@@ -192,28 +269,6 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     this.add_options();
     tab4.appendChild( this.V_select  );
 
-    function draw_spots ( t )  {
-      var maxV = t.max[t.V_val];
-      var minV = t.min[t.V_val];
-      var bigcircle = make_bigcircle( t.max[0], t.max[1] );
-      var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
-      var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-      for (var i = 0; i<t.nrows; i++) {
-          var h = t.get_value ( i,0 );
-          var k = t.get_value ( i,1 );
-          var l = t.get_value ( i,2 );
-          var V = t.get_value ( i,t.V_val );
-          if (!isNaN(V))  {
-             if (Math.abs(l)<0.000001)  {
-                //draw circle at (h,k) with radius ~ math.log10(V)
-                make_HKdot (h,k,V,maxV);
-                make_HKdot (-h,-k,V,maxV);
-                make_HKdot (-h,k,V,maxV);
-                make_HKdot (h,-k,V,maxV);
-            }
-          }
-      }
-    }
 
 
     (function(t){
@@ -221,76 +276,20 @@ jsViewHKL.prototype.makeTab4 = function ()  {
             select: function(event,ui)  {
                 t.V_val = 2+ parseInt(ui.item.value);
                 var maxV = t.max[t.V_val];
-                var minV = t.min[t.V_val];
-                var bigcircle = make_bigcircle( t.max[0], t.max[1] );
-                var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
-                var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-                for (var i = 0; i<t.nrows; i++) {
-                    var h = t.get_value ( i,0 );
-                    var k = t.get_value ( i,1 );
-                    var l = t.get_value ( i,2 );
-                    var V = t.get_value ( i,t.V_val );
-                    if (!isNaN(V))  {
-                       if (Math.abs(l)<0.000001)  {
-                          //draw circle at (h,k) with radius ~ math.log10(V)
-                          make_HKdot (h,k,V,maxV);
-                          make_HKdot (-h,-k,V,maxV);
-                          make_HKdot (-h,k,V,maxV);
-                          make_HKdot (h,-k,V,maxV);
-                      }
-                    }
-                }
+                draw_HKspots(t);
             }
         });
 
-    draw_spots ( t );
+    draw_HKspots ( t );
 
     $( HK_button ).click( function(event) {
-      draw_spots ( t );
+        draw_HKspots ( t );
     });
     $( HL_button ).click( function(event) {
-        var maxV = t.max[t.V_val];
-        var minV = t.min[t.V_val];
-        var bigcircle = make_bigcircle( t.max[0], t.max[2] );
-        var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-        var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-        for (var i = 0; i<t.nrows; i++) {
-            var h = t.get_value ( i,0 );
-            var k = t.get_value ( i,1 );
-            var l = t.get_value ( i,2 );
-            var V = t.get_value ( i,t.V_val );
-            if (!isNaN(V))  {
-               if (Math.abs(k)<0.000001)  {
-                  //draw circle at (h,k) with radius ~ math.log10(V)
-                  make_HKdot (h,l,V,maxV);
-                  make_HKdot (-h,-l,V,maxV);
-                  make_HKdot (-h,l,V,maxV);
-                  make_HKdot (h,-l,V,maxV);
-              }
-            }
-        }
+        draw_HLspots(t);
     });
     $( KL_button ).click( function(event) {
-        var maxV = t.max[t.V_val];
-        var minV = t.min[t.V_val];
-        var bigcircle = make_bigcircle( t.max[1], t.max[2] );
-        var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-        var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
-        for (var i = 0; i<t.nrows; i++) {
-            var h = t.get_value ( i,0 );
-            var k = t.get_value ( i,1 );
-            var l = t.get_value ( i,2 );
-            var V = t.get_value ( i,t.V_val );
-            if (!isNaN(V))  {
-               if (Math.abs(h)<0.000001)  {
-                  //draw circle at (h,k) with radius ~ math.log10(V)
-                  make_HKdot (k,l,V,maxV);
-                  make_HKdot (-k,-l,V,maxV);
-                  make_HKdot (-k,l,V,maxV);
-                  make_HKdot (k,-l,V,maxV);
-              }
-            }
-        }
+        draw_KLspots(t);
     });
 }(this))
 

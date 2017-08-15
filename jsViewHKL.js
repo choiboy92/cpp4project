@@ -25,10 +25,38 @@ function jsViewHKL()  {
   this.syminf = [];
   this.historyfiles = [];
 
+  this.symm = [];
+  this.dataset = [];
+  this.syminf = [];
+  this.historyfiles = [];
+  this.hkl_corrected = [];
+
   this.numberMissing = []; // length will be equal to the number of columns
 
   this.tab3_maxNrows = 100;
 
+}
+
+jsViewHKL.prototype.calc_symm_hkl = function ()  {
+    for (var j=0;j<3;j++)  {
+        this.hkl_corrected[j]= [];
+    }
+
+    for (var t=0; t<this.symm.length; t++)  {
+        for (var z=0; z<3; z++) {
+            var symm = this.symm[t][z];
+            if (symm.startsWith("-") == true)  {
+                for (var q=0; q<this.nrows; q++)  {
+                    this.hkl_corrected[z].push (this.get_value(q,z)*(-1));
+                }
+            }
+            else  {
+                for (var r=0; r<this.nrows; r++)  {
+                    this.hkl_corrected[z].push (this.get_value(r,z));
+                }
+            }
+        }
+    }
 }
 
 jsViewHKL.prototype.Init = function ( sceneId, data_url_str )  {
@@ -118,13 +146,9 @@ jsViewHKL.prototype.Load = function ( url_str )  {
 
 jsViewHKL.prototype.processData = function ( header,reflections )  {
 
-  alert ( 'header=\n' + header.join('\n') );
+  //alert ( 'header=\n' + header.join('\n') );
 
   this.reflections = reflections;
-  this.symm = [];
-  this.dataset = [];
-  this.syminf = [];
-  this.historyfiles = [];
 
   function whiteSpaceFilter(str) {
     return /\S/.test(str);
@@ -164,10 +188,10 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
           this.spacegroup = this.syminf.slice(x_start,x_end).join(" ");
       }
       else if (key == 'symm')  {
-          this.symm.push ( hlist.slice(1).join('\n').replace(/\s/g, '') );
+            this.symm.push( hlist.slice(1).join('').split(","));
       }
       else if (key == 'reso')  {
-          var reso = hlist.slice(1).filter(whiteSpaceFilter);
+          var reso = hlist.slice(1).join("");
 
           this.lowreso = 1.0/Math.sqrt(reso[0]);
           this.highreso = 1.0/Math.sqrt(reso[1]);
@@ -242,6 +266,7 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       }
   }
 
+  this.calc_symm_hkl ();
 /*
   var S = "";
   for (var i=0;i<22;i++)

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="pragma"  content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <title>jsViewHKL</title>
+  </head>
+
+
+  <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.structure.min.css"/>
+  <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui.theme.min.css"/>
+  <link rel="stylesheet" type="text/css" href="jsViewHKL.css"/>
+
+  <script src="js-lib/jquery-1.12.4.min.js"></script>
+  <script src="js-lib/jquery-ui.min.js"></script>
+
+  <script src="jsViewHKL.js"></script>
+  <script src="tab3.js"></script>
+  <script src="tab4.js"></script>
+  <script src="layout.js"></script>
+
+<body>
+
+  <!--This is where i make my tabs-->
+
+  <div id="tabs" style="width:100%;">
+    <ul>
+      <li><a href="#tab1">General</a></li>
+      <li><a href="#tab2">Summary</a></li>
+      <li><a href="#tab3">HKL List</a></li>
+      <li><a href="#tab4">HKL Zones</a></li>
+    </ul>
+    <div id="tab1">
+    </div>
+    <div id="tab2">
+    </div>
+    <div id="tab3">
+    </div>
+    <div id="tab4">
+    </div>
+  </div>
+
+  <script>
+  var cell;
+    $(document).ready(function()  {
+      $( "#tabs" ).tabs();
+      $(function() {
+        $( document ).tooltip();
+      });
+
+      var viewhkl = new jsViewHKL();
+      //User inputs data file which will be stored as data_url_str variable
+      var data_url_str = 'data/rnase.mtz';
+      viewhkl.Init ( 'scene', data_url_str);
+      viewhkl.Load ( data_url_str );
+
+    });
+  </script>
+
+</body>
+
+</html>
