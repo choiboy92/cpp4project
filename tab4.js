@@ -204,9 +204,37 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
     var V = t.get_value ( i,t.V_val );
     var T = t.symm_matrix;
     for (var j=0;j<t.symm_matrix.length;j++)  {
+      /*
       var h1 = T[j][0][0]*h + T[j][0][1]*k + T[j][0][2]*l;
       var k1 = T[j][1][0]*h + T[j][1][1]*k + T[j][1][2]*l;
       var l1 = T[j][2][0]*h + T[j][2][1]*k + T[j][2][2]*l;
+      */
+      var h1 = T[j][0][0]*h + T[j][1][0]*k + T[j][2][0]*l;
+      var k1 = T[j][0][1]*h + T[j][1][1]*k + T[j][2][1]*l;
+      var l1 = T[j][0][2]*h + T[j][1][2]*k + T[j][2][2]*l;
+
+      var x,y;
+      switch (zoneKey)  {
+        case 0 : if (Math.abs(l1-zoneHeight)<0.000001)
+                   x =
+                   y =
+                   //make_each_dot ( h1,k1,V,maxV );
+                break;
+        case 1 : if (Math.abs(k1-zoneHeight)<0.000001)
+        x =
+        y =
+                   //make_each_dot ( h1,l1,V,maxV );
+                break;
+        case 2 : if (Math.abs(h1-zoneHeight)<0.000001)
+        x =
+        y =
+                   //make_each_dot ( k1,l1,V,maxV );
+                break;
+        default: ;
+      }
+      make_each_dot ( x,y,V,maxV );
+
+/*
       switch (zoneKey)  {
         case 0 : if (Math.abs(l1-zoneHeight)<0.000001||Math.abs(l1+zoneHeight)<0.000001)
                    make_each_dot ( h1,k1,V,maxV );
@@ -219,6 +247,8 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
                 break;
         default: ;
       }
+*/
+
     }
   }
 }
@@ -242,8 +272,15 @@ function make_fieldset_table (td1,td2,td3)  {
 
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
-    tab4.innerHTML ='<canvas id="hklzone" width="700" height="650" >'+
+    tab4.innerHTML ='<canvas id="hklzone" width="700" height="700">'+
     'Use a compatible browser</canvas><br>';
+
+    /*
+    var w = $(window).width ();
+    var h = $(window).height();
+    var canvas_size = Math.min (w,h) - 200;
+    */
+
     make_bigcircle();
 
     //alert('Sep = '+ sep);

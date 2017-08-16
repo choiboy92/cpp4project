@@ -320,6 +320,13 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       }
   }
 
+  if (!this.ndif)  {
+    this.ndif = 1;
+    var dataset = {};
+    dataset.col_labels = [];
+    dataset.col_types  = [];
+    this.dataset.push ( dataset );
+  }
 
   for (var i=0;i<header.length;i++)  {
       var hlist = header[i].split(" ");
@@ -327,7 +334,10 @@ jsViewHKL.prototype.processData = function ( header,reflections )  {
       if (key == 'column')
       {
           var col_array = hlist.slice(1).filter(whiteSpaceFilter);
-          var x = col_array[4];
+          var x;
+          if (col_array.length<=4)  x = 0;
+                              else  x = col_array[4];
+          //alert ( col_array.length + '  ' + this.dataset.length + ' ' + x );
           this.dataset[x].col_labels.push ( col_array[0] );
           this.dataset[x].col_types.push ( col_array[1] );
           this.min.push ( col_array[2] );
@@ -360,7 +370,11 @@ jsViewHKL.prototype.calculateStats = function()  {
   var col_count = 0;
   for (var d = 0; d<this.ndif; d++) {
 
-    var hold = this.dataset[d].dcell.split('&nbsp;');
+    var hold;
+    if ('dcell' in this.dataset[d])
+      hold = this.dataset[d].dcell.split('&nbsp;');
+    else
+      hold = this.cell.split('&nbsp;');
 
     var a = hold[0];
     var b = hold[1];

@@ -131,10 +131,14 @@ jsViewHKL.prototype.makeTab1 = function(data_url_str)  {
 
       panel.appendChild ( table_ds );
 
-      var trow = add_row ( 'Cell (a,b,c,&alpha;,&beta;,&gamma;)',table_ds );
-      add_data ( this.dataset[i].dcell,6,trow );
-      trow = add_row ( 'Wavelength',table_ds );
-      add_data ( this.dataset[i].dwavel,6,trow );
+      if ('dcell' in this.dataset[i])  {
+        var trow = add_row ( 'Cell (a,b,c,&alpha;,&beta;,&gamma;)',table_ds );
+        add_data ( this.dataset[i].dcell,6,trow );
+      }
+      if ('dwavel' in this.dataset[i])  {
+        trow = add_row ( 'Wavelength',table_ds );
+        add_data ( this.dataset[i].dwavel,6,trow );
+      }
 
       trow = add_row ( 'Column Label<br>Column Type',table_ds );
       for (var j=0;j<this.dataset[i].col_labels.length;j++)
