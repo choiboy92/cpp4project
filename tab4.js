@@ -203,6 +203,7 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
     var l = t.get_value ( i,2 );
     var V = t.get_value ( i,t.V_val );
     var T = t.symm_matrix;
+    //alert (t.c1[t.V_val]);
     for (var j=0;j<t.symm_matrix.length;j++)  {
       /*
       var h1 = T[j][0][0]*h + T[j][0][1]*k + T[j][0][2]*l;
@@ -215,24 +216,39 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
 
       var x,y;
       switch (zoneKey)  {
-        case 0 : if (Math.abs(l1-zoneHeight)<0.000001)
-                   x =
-                   y =
+        case 0 : if (Math.abs(l1-zoneHeight)<0.000001)  {
+                    var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x2 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*k1)/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x3 = ((t.c3[t.V_val]*t.c1[t.V_val] - t.c2[t.V_val])*l1)/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    x = x1 + x2 + x3;
+                    y = k1/(t.s1[t.V_val]*t.u2[t.V_val]) - (t.c1[t.V_val]*l1)/(t.s1[t.V_val]*t.u3[t.V_val]);
+                    //alert ('x = ' + x);
+                    make_each_dot ( x,y,V,maxV );
+                 }
                    //make_each_dot ( h1,k1,V,maxV );
                 break;
-        case 1 : if (Math.abs(k1-zoneHeight)<0.000001)
-        x =
-        y =
+        case 1 : if (Math.abs(k1-zoneHeight)<0.000001)  {
+                    var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x2 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*k1)/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x3 = ((t.c3[t.V_val]*t.c1[t.V_val] - t.c2[t.V_val])*l1)/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    x = x1 + x2 + x3;
+                    y = -(t.c1[t.V_val]*k1)/(t.s1[t.V_val]*t.u2[t.V_val]) + l1/(t.s1[t.V_val]*t.u3[t.V_val]);
+                 }
+                 make_each_dot ( x,y,V,maxV );
                    //make_each_dot ( h1,l1,V,maxV );
                 break;
-        case 2 : if (Math.abs(h1-zoneHeight)<0.000001)
-        x =
-        y =
+        case 2 : if (Math.abs(h1-zoneHeight)<0.000001)  {
+                    var x1 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*h1)/(t.s2[t.V_val]*t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x2 = (t.s2[t.V_val]*k1)/(t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x3 = ((t.c3[t.V_val]*t.c2[t.V_val] - t.c1[t.V_val])*l1)/(t.s2[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    x = x1 + x2 + x3;
+                    y = -(t.c2[t.V_val]*h1)/(t.s2[t.V_val]*t.u1[t.V_val]) + l1/(t.s2[t.V_val]*t.u3[t.V_val]);
+                 }
+                 make_each_dot ( x,y,V,maxV );
                    //make_each_dot ( k1,l1,V,maxV );
                 break;
         default: ;
       }
-      make_each_dot ( x,y,V,maxV );
 
 /*
       switch (zoneKey)  {
@@ -323,6 +339,8 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     this.zonekey   = 0;
 
     (function(t){
+        draw_all_spots ( t, 0, 0);
+
         $( t.V_select ).selectmenu({
             select: function(event,ui)  {
                 t.V_val = 2+ parseInt(ui.item.value);
@@ -345,8 +363,6 @@ jsViewHKL.prototype.makeTab4 = function ()  {
              draw_all_spots(t, t.zonekey, t.zonelevel);
            }
         });
-
-        draw_all_spots ( t, 0, 0);
 
         $('#radio-1').click(function()  {
             t.zonekey = 0;

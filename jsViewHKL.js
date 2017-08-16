@@ -358,6 +358,18 @@ jsViewHKL.prototype.calculateStats = function()  {
   this.abs_data_total = [];
   this.s_squaredmin = [];
   this.s_squaredmax = [];
+
+  this.omega = [];
+  this.c1 = [];
+  this.c2 = [];
+  this.c3 = [];
+  this.s1 = [];
+  this.s2 = [];
+  this.s3 = [];
+  this.u1 = [];
+  this.u2 = [];
+  this.u3 = [];
+
   for (var i=0;i<this.ncols;i++)  {
     this.numberMissing.push ( 0 );
     this.count.push( 0 );
@@ -365,6 +377,16 @@ jsViewHKL.prototype.calculateStats = function()  {
     this.abs_data_total.push( 0 );
     this.s_squaredmin.push( 0 );
     this.s_squaredmax.push( 0 );
+    this.omega.push( 0 );
+    this.c1.push( 0 );
+    this.c2.push( 0 );
+    this.c3.push( 0 );
+    this.s1.push( 0 );
+    this.s2.push( 0 );
+    this.s3.push( 0 );
+    this.u1.push( 0 );
+    this.u2.push( 0 );
+    this.u3.push( 0 );
   }
 
   var col_count = 0;
@@ -391,9 +413,7 @@ jsViewHKL.prototype.calculateStats = function()  {
     var m11 = omega*(1-(c1*c1));
     var m22 = omega*(1-(c2*c2));
     var m33 = omega*(1-(c3*c3));
-    var m23;
-    var m31;
-    var m12;
+    var m23,m31,m12;
     var m32 = m23 = omega*((c2*c3) - c1);
     var m13 = m31 = omega*((c3*c1) - c2);
     var m21 = m12 = omega*((c1*c2) - c3);
@@ -401,6 +421,22 @@ jsViewHKL.prototype.calculateStats = function()  {
     for(var q = 0; q<this.dataset[d].col_labels.length; q++)  {
       var s_min =  Number.MAX_VALUE;
       var s_max = -Number.MAX_VALUE;
+
+
+      this.omega[col_count] = (1 -(c1*c1)-(c2*c2)-(c3*c3)+(2*c1*c2*c3));
+
+      this.c1[col_count] = c1;
+      this.c2[col_count] = c2;
+      this.c3[col_count] = c3;
+
+      this.s1[col_count] = Math.sin(Math.PI*alpha/180.0);
+      this.s2[col_count] = Math.sin(Math.PI*beta/180.0);
+      this.s3[col_count] = Math.sin(Math.PI*gamma/180.0);
+
+      this.u1[col_count] = a;
+      this.u2[col_count] = b;
+      this.u3[col_count] = c;
+
       for (var r = 0; r < this.nrows; r++) {
           if (!isNaN(this.get_value(r,col_count)))  {
               var h = this.get_value(r,0);
