@@ -1,25 +1,21 @@
-
-
 /*
  *  =================================================================
  *
- *    25.06.17   <--  Date of Last Modification.
+ *    16.08.17   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-client/cofe.communication.js
+ *  **** Project :  jsViewHKL - javascript-based
  *       ~~~~~~~~~
- *  **** Project :  jsCoFE - javascript-based Cloud Front End
- *       ~~~~~~~~~
- *  **** Content :  validateUserData()
- *       ~~~~~~~~~  makeCommErrorMessage()
- *                  serverCommand()
- *                  serverRequest()
+ *  **** Content :  Parsing of header data and binary data and
+ *       ~~~~~~~~~  construction of data structures to hold this
+ *                  this data.
  *
  *
+ *  **** Author  :  Junho Choi
+ *       ~~~~~~~~~
  *
  *  =================================================================
- *
  */
 
 
@@ -52,7 +48,6 @@ function jsViewHKL()  {
   this.dataset = [];
   this.syminf = [];
   this.historyfiles = [];
-  //this.hkl_corrected = [];
 
   this.symm_matrix = [];
 
@@ -64,6 +59,7 @@ function jsViewHKL()  {
 
 jsViewHKL.prototype.calc_symm_hkl = function ()  {
 
+  //create matrix from XYZ in SYMM header part
   this.symm_matrix = [];
   for (var t=0; t<this.symm.length; t++)  {
     var T = [[0,0,0],[0,0,0],[0,0,0]];
@@ -220,7 +216,7 @@ jsViewHKL.prototype.Load = function ( url_str )  {
 
 jsViewHKL.prototype.processData = function ( header,reflections )  {
 
-  alert ( 'header=\n' + header.join('\n') );
+  //alert ( 'header=\n' + header.join('\n') );
 
   this.reflections = reflections;
 
@@ -411,12 +407,8 @@ jsViewHKL.prototype.calculateStats = function()  {
 
       this.s_squaredmin[col_count] = 1.0/Math.sqrt( s_min );
       this.s_squaredmax[col_count] = 1.0/Math.sqrt( s_max );
-      //alert ('this.s_squaredmin['+col_count+'] = '+ this.s_squaredmin[col_count]);
-      //alert ('this.s_squaredmax['+col_count+'] = '+ this.s_squaredmax[col_count]);
       col_count++;
-
     }
-
   }
 
 
@@ -440,6 +432,8 @@ jsViewHKL.prototype.calculateStats = function()  {
   }
 }
 
+
+//get binary data function
 jsViewHKL.prototype.get_value = function ( row,col )  {
   return this.reflections.getFloat32((col + row*this.ncols)*4,this.endian);
 }

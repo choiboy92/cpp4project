@@ -1,4 +1,21 @@
-
+/*
+ *  =================================================================
+ *
+ *    16.08.17   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Project :  jsViewHKL - javascript-based
+ *       ~~~~~~~~~
+ *  **** Content :  functions to make first and second tab and
+ *       ~~~~~~~~~  general layout of tabs
+ *
+ *
+ *  **** Author  :  Junho Choi
+ *       ~~~~~~~~~
+ *
+ *  =================================================================
+ */
 
 function make_table()  {
 var table = document.createElement ('table')

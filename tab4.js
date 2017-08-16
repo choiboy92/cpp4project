@@ -1,3 +1,22 @@
+/*
+ *  =================================================================
+ *
+ *    16.08.17   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Project :  jsViewHKL - javascript-based
+ *       ~~~~~~~~~
+ *  **** Content :  functions to make fourth tab (HKL zone)
+ *       ~~~~~~~~~
+ *
+ *  **** Author  :  Junho Choi
+ *       ~~~~~~~~~
+ *
+ *  =================================================================
+ */
+
+
 
 function make_bigcircle ( Hmax_data, Vmax_data )  {
     var canvas = document.getElementById('hklzone');
@@ -98,13 +117,13 @@ function erf(x){
     return 2 * sum / Math.sqrt(3.14159265358979);
 }
 
-
-  function make_dot (h,k,V, maxV) {
+//function to draw a single dot
+  function make_each_dot (hval,vval,V, maxV) {
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
       maxRad = (this.Hsep+this.Vsep)/5.0;
-      var x = 350+(h*this.Hsep);
-      var y = 325+(k*this.Vsep);
+      var x = 350+(hval*this.Hsep);
+      var y = 325-(vval*this.Vsep);
 
       ithresh   = 1.0;
       vcontrast = 0.5;
@@ -159,30 +178,8 @@ jsViewHKL.prototype.add_options =  function () {
       }
 }
 
-
-function draw_HKspots ( t )  {
-  var maxV = t.max[t.V_val];
-  var bigcircle = make_bigcircle( t.max[0], t.max[1] );
-  var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
-  var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-  for (var i = 0; i<t.nrows; i++)  {
-    var h = t.get_value ( i,0 );
-    var k = t.get_value ( i,1 );
-    var l = t.get_value ( i,2 );
-    var V = t.get_value ( i,t.V_val );
-    for (var j=0;j<t.symm_matrix.length;j++)  {
-      var h1 = t.symm_matrix[j][0][0]*h + t.symm_matrix[j][0][1]*k + t.symm_matrix[j][0][2]*l;
-      var k1 = t.symm_matrix[j][1][0]*h + t.symm_matrix[j][1][1]*k + t.symm_matrix[j][1][2]*l;
-      var l1 = t.symm_matrix[j][2][0]*h + t.symm_matrix[j][2][1]*k + t.symm_matrix[j][2][2]*l;
-      if (Math.abs(l1)<0.000001)  {
-        make_dot ( h1,k1,V,maxV );
-      }
-    }
-  }
-}
-
-
-function draw_spots ( t,zoneKey,zoneHeight )  {
+// function to draw all spots
+function draw_all_spots ( t,zoneKey,zoneHeight )  {
   var maxV = t.max[t.V_val];
   switch (zoneKey) {
       case 0 : var bigcircle = make_bigcircle( t.max[0], t.max[1] );
@@ -193,10 +190,10 @@ function draw_spots ( t,zoneKey,zoneHeight )  {
                var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
                var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
                break;
-     case 2 : var bigcircle = make_bigcircle( t.max[1], t.max[2] );
-              var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-              var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
-              break;
+      case 2 : var bigcircle = make_bigcircle( t.max[1], t.max[2] );
+               var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
+               var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
+               break;
       default: ;
 
   }
@@ -211,14 +208,14 @@ function draw_spots ( t,zoneKey,zoneHeight )  {
       var k1 = T[j][1][0]*h + T[j][1][1]*k + T[j][1][2]*l;
       var l1 = T[j][2][0]*h + T[j][2][1]*k + T[j][2][2]*l;
       switch (zoneKey)  {
-        case 0 : if (Math.abs(l1-zoneHeight)<0.000001)
-                   make_dot ( h1,k1,V,maxV );
+        case 0 : if (Math.abs(l1-zoneHeight)<0.000001||Math.abs(l1+zoneHeight)<0.000001)
+                   make_each_dot ( h1,k1,V,maxV );
                 break;
-        case 1 : if (Math.abs(k1-zoneHeight)<0.000001)
-                   make_dot ( h1,l1,V,maxV );
+        case 1 : if (Math.abs(k1-zoneHeight)<0.000001||Math.abs(k1+zoneHeight)<0.000001)
+                   make_each_dot ( h1,l1,V,maxV );
                 break;
-        case 2 : if (Math.abs(h1-zoneHeight)<0.000001)
-                   make_dot ( k1,l1,V,maxV );
+        case 2 : if (Math.abs(h1-zoneHeight)<0.000001||Math.abs(h1+zoneHeight)<0.000001)
+                   make_each_dot ( k1,l1,V,maxV );
                 break;
         default: ;
       }
@@ -226,79 +223,22 @@ function draw_spots ( t,zoneKey,zoneHeight )  {
   }
 }
 
+  //make table to hold field sets
+function make_fieldset_table (td1,td2,td3)  {
+    var table = document.createElement ('table')
+    var fieldset_table_tr = document.createElement ('tr');
+    this.fieldset_table_td = [];
+    for (var td = 0; td<3; td++)  {
+        fieldset_table_td[td] = document.createElement('td');
+        fieldset_table_tr.appendChild (fieldset_table_td[td]);
+        table.appendChild (fieldset_table_tr);
 
-
-/*
-        //var h = t.get_value ( i,0 );
-        //var k = t.get_value ( i,1 );
-        var l = t.get_value ( i,2 );
-        var V = t.get_value ( i,t.V_val );
-        if (!isNaN(V))  {
-           if (Math.abs(l)<0.000001)  {
-              //draw circle at (h,k) with radius ~ math.log10(V)
-              //make_dot (h,k,V,maxV);
-              //make_dot (-h,-k,V,maxV);
-              //make_dot (-h,k,V,maxV);
-              //make_dot (h,-k,V,maxV);
-              for (var q = 0; q<t.symm.length; q++)  {
-                  make_dot(t.hkl_corrected[0][(q*t.nrows)+i],t.hkl_corrected[1][(q*t.nrows)+i], V,maxV)
-              }
-          }
-        }
     }
-  }
-
-
-  function draw_HLspots (t)  {
-      var maxV = t.max[t.V_val];
-      var bigcircle = make_bigcircle( t.max[0], t.max[2] );
-      var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-      var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
-      for (var i = 0; i<t.nrows; i++) {
-          //var h = t.get_value ( i,0 );
-          var k = t.get_value ( i,1 );
-          //var l = t.get_value ( i,2 );
-          var V = t.get_value ( i,t.V_val );
-          if (!isNaN(V))  {
-             if (Math.abs(k)<0.000001)  {
-                //draw circle at (h,k) with radius ~ math.log10(V)
-                make_dot (h,l,V,maxV);
-                make_dot (-h,-l,V,maxV);
-                make_dot (-h,l,V,maxV);
-                make_dot (h,-l,V,maxV);
-                for (var q = 0; q<t.symm.length; q++)  {
-                    make_dot(t.hkl_corrected[0][(q*t.nrows)+i],t.hkl_corrected[2][(q*t.nrows)+i], V, maxV)
-                }
-            }
-          }
-      }
-  }
-
-  function draw_KLspots (t)  {
-      var maxV = t.max[t.V_val];
-      var bigcircle = make_bigcircle( t.max[1], t.max[2] );
-      var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-      var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
-      for (var i = 0; i<t.nrows; i++) {
-          var h = t.get_value ( i,0 );
-          //var k = t.get_value ( i,1 );
-          //var l = t.get_value ( i,2 );
-          var V = t.get_value ( i,t.V_val );
-          if (!isNaN(V))  {
-             if (Math.abs(h)<0.000001)  {
-                //draw circle at (h,k) with radius ~ math.log10(V)
-                make_dot (k,l,V,maxV);
-                make_dot (-k,-l,V,maxV);
-                make_dot (-k,l,V,maxV);
-                make_dot (k,-l,V,maxV);
-                for (var q = 0; q<t.symm.length; q++)  {
-                    make_dot(t.hkl_corrected[1][(q*t.nrows)+i],t.hkl_corrected[2][(q*t.nrows)+i], V,maxV)
-                }
-            }
-          }
-      }
-  }
-  */
+    fieldset_table_td[0].appendChild ( td1 );
+    fieldset_table_td[1].appendChild ( td2 );
+    fieldset_table_td[2].appendChild ( td3 );
+    return table;
+}
 
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
@@ -310,44 +250,79 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
     this.V_val = 3;
 
-    var fieldset = document.createElement ( 'fieldset' );
-    tab4.appendChild ( fieldset );
-    fieldset.setAttribute ( 'style','width:300px' );
+    var fieldset1 = document.createElement ( 'fieldset' );
+    var fieldset2 = document.createElement ( 'fieldset' );
+    var fieldset3 = document.createElement ( 'fieldset' );
+    var fieldset_table = make_fieldset_table (fieldset1, fieldset2, fieldset3);
+    tab4.appendChild ( fieldset_table );
+
+
     $('<legend>Select a plane:</legend>' +
-      '<label for="radio-1">H K 0</label>' +
+      '<label for="radio-1">h k 0</label>' +
       '<input type="radio" name="radio-1" id="radio-1" checked="checked">' +
-      '<label for="radio-2">H 0 L</label>' +
+      '<label for="radio-2">h 0 l</label>' +
       '<input type="radio" name="radio-1" id="radio-2">' +
-      '<label for="radio-3">0 K L</label>' +
-      '<input type="radio" name="radio-1" id="radio-3">' ).appendTo ( fieldset );
+      '<label for="radio-3">0 k l</label>' +
+      '<input type="radio" name="radio-1" id="radio-3">' ).appendTo ( fieldset1 );
+    $('<legend>Select data:</legend>' ).appendTo ( fieldset2 );
+    $('<legend>Select zone level:</legend>').appendTo ( fieldset3 );
+
 
     $( "input[type='radio']" ).checkboxradio();
 
     //implement selectMenu
     this.V_select  = document.createElement ('select');
     this.add_options();
-    tab4.appendChild( this.V_select  );
+    fieldset2.appendChild( this.V_select  );
+
+    //implement zone level spinner
+    var spinner = document.createElement ( 'input' );
+    spinner.setAttribute ('id',"zonelevel_spinner" );
+    spinner.setAttribute ( 'style','width:60px' );
+    spinner.setAttribute ('value', "0");
+    fieldset3.appendChild ( spinner );
+
+    this.zonelevel = 0;
+    this.zonekey   = 0;
 
     (function(t){
         $( t.V_select ).selectmenu({
             select: function(event,ui)  {
                 t.V_val = 2+ parseInt(ui.item.value);
                 var maxV = t.max[t.V_val];
-                draw_spots(t);
+                $(spinner).spinner( 'value', 0 );
+                draw_all_spots(t,t.zonekey, 0);
             }
         });
+        $(spinner).spinner ({
+            step: 1,
+            spin: function( event, ui )  {
+                t.zonelevel = ui.value;
+                draw_all_spots(t, t.zonekey, t.zonelevel);
+            }
+        });
+        $("#zonelevel_spinner").keypress(function (e) {
+           if (e.keyCode == 13) {
+             var val = $("#zonelevel_spinner").spinner( "value" );
+             t.zonelevel = val;
+             draw_all_spots(t, t.zonekey, t.zonelevel);
+           }
+        });
 
-    draw_spots ( t, 0, 0);
+        draw_all_spots ( t, 0, 0);
 
-    $('#radio-1').click(function()  {
-        draw_spots ( t, 0, 0 );
-    });
-    $('#radio-2').click(function(){
-        draw_spots(t, 1, 0);
-    });
-    $('#radio-3').click(function(){
-        draw_spots(t, 2, 0);
-    });
-}(this))
+        $('#radio-1').click(function()  {
+            t.zonekey = 0;
+            draw_all_spots(t, t.zonekey, t.zonelevel);
 
+        });
+        $('#radio-2').click(function(){
+            t.zonekey = 1;
+            draw_all_spots(t, t.zonekey, t.zonelevel);
+        });
+        $('#radio-3').click(function(){
+            t.zonekey = 2;
+            draw_all_spots(t, t.zonekey, t.zonelevel);
+        });
+    }(this))
 }

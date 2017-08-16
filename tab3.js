@@ -1,3 +1,23 @@
+/*
+ *  =================================================================
+ *
+ *    16.08.17   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Project :  jsViewHKL - javascript-based
+ *       ~~~~~~~~~
+ *  **** Content :  functions to make fourth tab (HKL zone)
+ *       ~~~~~~~~~
+ *
+ *  **** Author  :  Junho Choi
+ *       ~~~~~~~~~
+ *
+ *  =================================================================
+ */
+
+
+
 
 function make_table()  {
 var table = document.createElement ('table')
@@ -92,7 +112,7 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
     var div1 = document.createElement ( "div" );
     div1.setAttribute ( 'class','scrollingtable' );
     div1.style.height = $(window).height() - 140 + 'px';
-//    div1.style.width  = $(window).width () - 160 + 'px';
+    //    div1.style.width  = $(window).width () - 160 + 'px';
     div.appendChild ( div1 );
     var div2 = document.createElement ( "div" );
     div1.appendChild ( div2 );
@@ -100,161 +120,155 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
     div2.appendChild ( div3 );
 
     $(window).resize(function() {
-      div .style.height = $(window).height() - 140 + 'px';
-      div .style.width  = $(window).width () - 70  + 'px';
-      div1.style.height = $(window).height() - 140 + 'px';
+    div .style.height = $(window).height() - 140 + 'px';
+    div .style.width  = $(window).width () - 70  + 'px';
+    div1.style.height = $(window).height() - 140 + 'px';
     });
 
+    //make table
     var table3 = make_table();
     div3.appendChild ( table3 );
+    this.makeTable3 ( 0,table3 );
 
-  this.makeTable3 ( 0,table3 );
-  // Add slider
 
-   var vspacer = document.createElement ( 'br');
-   tab3.appendChild ( vspacer );
+    var vspacer = document.createElement ( 'br');
+    tab3.appendChild ( vspacer );
 
-   var foot_table = document.createElement( 'table' );
-   tab3.appendChild( foot_table );
-   var foot_row = document.createElement( 'tr' );
-   foot_table.appendChild ( foot_row );
+    //create foot_table
+    var foot_table = document.createElement( 'table' );
+    tab3.appendChild( foot_table );
+    var foot_row = document.createElement( 'tr' );
+    foot_table.appendChild ( foot_row );
 
-   var td_slide = document.createElement ('td');
-   foot_row.appendChild(td_slide);
-   td_slide.setAttribute ('style','width:80%' );
-   slider = document.createElement ( 'div');
-   td_slide.appendChild ( slider );
+    //add slider
+    var td_slide = document.createElement ('td');
+    foot_row.appendChild(td_slide);
+    td_slide.setAttribute ('style','width:80%' );
+    slider = document.createElement ( 'div');
+    td_slide.appendChild ( slider );
 
-   (function(t){
-     $( function() {
-       $( slider ).slider({
-         range: "max",
-         min: 1,
-         max: t.nrows-t.tab3_maxNrows+1,
-         value: 1,
-         slide: function( event, ui ) {
-           t.makeTable3 ( ui.value-1,table3 );
-           $(spinner).spinner( 'value', ui.value );
-           inputH.value = t.get_value(ui.value-1,0);
-           inputK.value = t.get_value(ui.value-1,1);
-           inputL.value = t.get_value(ui.value-1,2);
-         }
-       });
-     });
-  }(this))
+    //Add spacer
+    var hspacer1 = document.createElement ('td');
+    hspacer1.setAttribute ( 'style','width:auto' );
+    hspacer1.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;';
+    foot_row.appendChild ( hspacer1 );
 
-  //Add spacer
-  var hspacer1 = document.createElement ('td');
-  hspacer1.setAttribute ( 'style','width:auto' );
-  hspacer1.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;';
-  foot_row.appendChild ( hspacer1 );
+    //Add spinner
+    var td_spin = document.createElement ('td');
+    foot_row.appendChild (td_spin);
 
-  //Add spinner
-  var td_spin = document.createElement ('td');
-  foot_row.appendChild (td_spin);
+    td_spin.setAttribute ( 'style','width:20%' );
 
-  td_spin.setAttribute ( 'style','width:20%' );
+    var spinner = document.createElement ( 'input' );
+    spinner.setAttribute ('id',"reflec_spinner" );
+    spinner.setAttribute ( 'style','width:60px' );
+    spinner.setAttribute ('value', "1");
+    td_spin.appendChild ( spinner );
 
-  var spinner = document.createElement ( 'input' );
-  spinner.setAttribute ('id',"spinner" );
-  spinner.setAttribute ( 'style','width:60px' );
-  spinner.setAttribute ('value', "1");
+    var label1 = document.createElement ('td');
+    label1.setAttribute ( 'style','width:auto' );
+    label1.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;Go to reflection:&nbsp;&nbsp;&nbsp;H=';
+    $(label1).css({'white-space':'nowrap'});
+    foot_row.appendChild ( label1 );
 
-  td_spin.appendChild ( spinner );
-  (function(t){
-    $( function() {
-      $( spinner ).spinner({
-          min: 1,
-          max: t.nrows-t.tab3_maxNrows+1,
-          step: 1,
-          spin: function( event, ui ) {
-            t.makeTable3 ( ui.value-1,table3 );
-            $(slider).slider( 'value', ui.value );
-            inputH.value = t.get_value(ui.value-1,0);
-            inputK.value = t.get_value(ui.value-1,1);
-            inputL.value = t.get_value(ui.value-1,2);
-          },
-          change: function( event, ui )  {
-              t.makeTable3 ( spinner.value-1, table3 );
-              $(slider).slider( 'value', spinner.value );
-              inputH.value = t.get_value(spinner.value-1,0);
-              inputK.value = t.get_value(spinner.value-1,1);
-              inputL.value = t.get_value(spinner.value-1,2);
-          }
-      });
-    });
+    var td1 = document.createElement ('td');
+    var inputH = document.createElement ( 'input' );
+    inputH.setAttribute ( 'style','width:40px' );
+    inputH.setAttribute ( 'id','inputH' );
+    inputH.setAttribute ( 'type','text' );
+    inputH.setAttribute ( 'value', this.get_value( 0,0 ) );
+    td1.appendChild ( inputH );
+    foot_row.appendChild ( td1 );
 
-    $("#spinner").keypress(function (e) {
-       if (e.keyCode == 13) {
-         var val = $("#spinner").spinner( "value" );
-         t.makeTable3 ( val-1, table3 );
-         $(slider).slider( 'value', val );
-         inputH.value = t.get_value(val-1,0);
-         inputK.value = t.get_value(val-1,1);
-         inputL.value = t.get_value(val-1,2);
-       }
-    });
+    var td2 = document.createElement ('td');
+    td2.innerHTML = 'K = ';
+    $(td2).css({'white-space':'nowrap'});
+    var inputK = document.createElement ( 'input' );
+    inputK.setAttribute ( 'style','width:40px' );
+    inputK.setAttribute ( 'id','inputK' );
+    inputK.setAttribute ( 'type','text' );
+    inputK.setAttribute ( 'value', this.get_value( 0,1 ) );
+    td2.appendChild ( inputK );
+    foot_row.appendChild ( td2 );
 
-  }(this))
+    var td3 = document.createElement ('td');
+    td3.innerHTML = 'L = ';
+    $(td3).css({'white-space':'nowrap'});
+    var inputL = document.createElement ( 'input' );
+    inputL.setAttribute ( 'style','width:40px' );
+    inputL.setAttribute ( 'id','inputL' );
+    inputL.setAttribute ( 'type','text' );
+    inputL.setAttribute ( 'value', this.get_value( 0,2 )  );
+    td3.appendChild ( inputL );
+    foot_row.appendChild ( td3 );
 
-  var label1 = document.createElement ('td');
-  label1.setAttribute ( 'style','width:auto' );
-  label1.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;Go to reflection:&nbsp;&nbsp;&nbsp;H=';
-  $(label1).css({'white-space':'nowrap'});
-  foot_row.appendChild ( label1 );
-
-  var td1 = document.createElement ('td');
-  var inputH = document.createElement ( 'input' );
-  inputH.setAttribute ( 'style','width:40px' );
-  inputH.setAttribute ( 'id','inputH' );
-  inputH.setAttribute ( 'type','text' );
-  inputH.setAttribute ( 'value', this.get_value( 0,0 ) );
-  td1.appendChild ( inputH );
-  foot_row.appendChild ( td1 );
-
-  var td2 = document.createElement ('td');
-  td2.innerHTML = 'K = ';
-  $(td2).css({'white-space':'nowrap'});
-  var inputK = document.createElement ( 'input' );
-  inputK.setAttribute ( 'style','width:40px' );
-  inputK.setAttribute ( 'id','inputK' );
-  inputK.setAttribute ( 'type','text' );
-  inputK.setAttribute ( 'value', this.get_value( 0,1 ) );
-  td2.appendChild ( inputK );
-  foot_row.appendChild ( td2 );
-
-  var td3 = document.createElement ('td');
-  td3.innerHTML = 'L = ';
-  $(td3).css({'white-space':'nowrap'});
-  var inputL = document.createElement ( 'input' );
-  inputL.setAttribute ( 'style','width:40px' );
-  inputL.setAttribute ( 'id','inputL' );
-  inputL.setAttribute ( 'type','text' );
-  inputL.setAttribute ( 'value', this.get_value( 0,2 )  );
-  td3.appendChild ( inputL );
-  foot_row.appendChild ( td3 );
-
-  //when enter is pressed, function
+  //function when enter is pressed
   function ent_pressed (t)  {
       for (var i = 0; i<t.nrows; i++)  {
           if (inputH.value == t.get_value ( i,0 ) && inputK.value == t.get_value ( i,1 ) && inputL.value == t.get_value ( i,2 ))
           {
-              if (i > t.nrows-100) {
-                  t.makeTable3 ( t.nrows-100, table3 );
+              if (i > t.nrows-t.tab3_maxNrows) {
+                  t.makeTable3 ( t.nrows-t.tab3_maxNrows, table3 );
+                  $(slider).slider( 'value', t.nrows-t.tab3_maxNrows+1 );
+                  $(spinner).spinner( 'value', t.nrows-t.tab3_maxNrows+1 );
+                  i = t.nrows;
               }
               else {
                   t.makeTable3 ( i, table3 );
+                  $(slider).slider( 'value', i+1 );
+                  $(spinner).spinner( 'value', i+1 );
+                  i = t.nrows;
               }
-              $(slider).slider( 'value', i+1 );
-              $(spinner).spinner( 'value', i+1 );
           }
-          /*else if(i == t.nrows)  {
-              alert('Parameters entered not found');
-          }*/
+      }
+      if (i == t.nrows)  {
+          alert('Please enter a valid set of h, k, l values');
       }
   }
 
+
   (function(t){
+    $( slider ).slider({
+    range: "max",
+    min: 1,
+    max: t.nrows-t.tab3_maxNrows+1,
+    value: 1,
+    slide: function( event, ui ) {
+      t.makeTable3 ( ui.value-1,table3 );
+      $(spinner).spinner( 'value', ui.value );
+      inputH.value = t.get_value(ui.value-1,0);
+      inputK.value = t.get_value(ui.value-1,1);
+      inputL.value = t.get_value(ui.value-1,2);
+    }
+    });
+
+    $( spinner ).spinner({
+      min: 1,
+      max: t.nrows-t.tab3_maxNrows+1,
+      step: 1,
+      spin: function( event, ui ) {
+        t.makeTable3 ( ui.value-1,table3 );
+        $(slider).slider( 'value', ui.value );
+        inputH.value = t.get_value(ui.value-1,0);
+        inputK.value = t.get_value(ui.value-1,1);
+        inputL.value = t.get_value(ui.value-1,2);
+      },
+    });
+
+    $("#reflec_spinner").keypress(function (e) {
+     if (e.keyCode == 13) {
+         var val = $("#reflec_spinner").spinner( "value" );
+         if (val>t.nrows-t.tab3_maxNrows)  {
+             val = t.nrows-t.tab3_maxNrows +1;
+         }
+         $(slider).slider( 'value', val );
+         $(spinner).spinner( 'value', val );
+         t.makeTable3 ( val-1, table3 );
+         inputH.value = t.get_value(val-1,0);
+         inputK.value = t.get_value(val-1,1);
+         inputL.value = t.get_value(val-1,2);
+    }
+    });
     $("#inputH").keypress(function (e) {
        if (e.keyCode == 13) {
          ent_pressed(t);
@@ -271,5 +285,4 @@ https://stackoverflow.com/questions/8232713/how-to-display-scroll-bar-onto-a-htm
        }
     });
   }(this))
-
 }
