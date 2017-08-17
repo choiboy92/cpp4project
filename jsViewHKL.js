@@ -409,6 +409,8 @@ jsViewHKL.prototype.calculateStats = function()  {
     var c2 = Math.cos(Math.PI*beta/180.0);
     var c3 = Math.cos(Math.PI*gamma/180.0);
 
+    //alert ( ' ' + typeof alpha + ' ' + alpha + ' ' + c1 );
+
     var omega = 1/(1 -(c1*c1)-(c2*c2)-(c3*c3)+(2*c1*c2*c3));
     var m11 = omega*(1-(c1*c1));
     var m22 = omega*(1-(c2*c2));

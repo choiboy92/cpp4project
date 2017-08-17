@@ -10,7 +10,7 @@
  *  **** Content :  functions to make fourth tab (HKL zone)
  *       ~~~~~~~~~
  *
- *  **** Author  :  Junho Choi
+ *  **** Author  :  Junho Choi (Eton College, Eton)
  *       ~~~~~~~~~
  *
  *  =================================================================
@@ -18,7 +18,7 @@
 
 
 
-function make_bigcircle ( Hmax_data, Vmax_data )  {
+jsViewHKL.prototype.make_bigcircle = function ( Hmax_data, Vmax_data )  {
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
     ctx.lineWidth = 2;
@@ -28,15 +28,15 @@ function make_bigcircle ( Hmax_data, Vmax_data )  {
 
     this.big_rad = (Math.min(canvas.height, canvas.width)/2)-50;
 
-    this.Hsep = big_rad/Hmax_data;
-    this.Vsep = big_rad/Vmax_data;
+    this.Hsep = this.big_rad/Hmax_data;
+    this.Vsep = this.big_rad/Vmax_data;
     ctx.beginPath();
-    ctx.arc((canvas.width-100)/2,(canvas.height)/2,big_rad,0, Math.PI*2, 1);
+    ctx.arc((canvas.width-100)/2,(canvas.height)/2,this.big_rad,0, Math.PI*2, 1);
     ctx.stroke();
     ctx.closePath();
 }
 
-function Hdraw_arrow ( col_labels )  {
+jsViewHKL.prototype.Hdraw_arrow = function ( col_labels )  {
     var buffer = 100;
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
@@ -70,7 +70,7 @@ function Hdraw_arrow ( col_labels )  {
   }
 
 
-  function Vdraw_arrow (col_labels) {
+jsViewHKL.prototype.Vdraw_arrow = function (col_labels) {
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
       ctx.lineWidth = 4;
@@ -121,7 +121,7 @@ function erf(x){
 }
 
 //function to draw a single dot
-  function make_each_dot (hval,vval,V, maxV) {
+jsViewHKL.prototype.make_each_dot  = function ( hval,vval,V, maxV) {
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
       maxRad = (this.Hsep+this.Vsep)/5.0;
@@ -182,20 +182,21 @@ jsViewHKL.prototype.add_options =  function () {
 }
 
 // function to draw all spots
-function draw_all_spots ( t,zoneKey,zoneHeight )  {
+jsViewHKL.prototype.draw_all_spots = function ( t,zoneKey,zoneHeight )  {
   var maxV = t.max[t.V_val];
   switch (zoneKey) {
-      case 0 : var bigcircle = make_bigcircle( t.max[0], t.max[1] );
-               var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[1] );
-               var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+      case 0 : //var bigcircle = make_bigcircle( t.max[0], t.max[1] );
+               var bigcircle = this.make_bigcircle( t.lowreso, t.lowreso );
+               var ver_arrow = this.Vdraw_arrow( t.dataset[0].col_labels[1] );
+               var hrz_arrow = this.Hdraw_arrow( t.dataset[0].col_labels[0] );
                break;
-      case 1 : var bigcircle = make_bigcircle( t.max[0], t.max[2] );
-               var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-               var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[0] );
+      case 1 : var bigcircle = this.make_bigcircle( t.max[0], t.max[2] );
+               var ver_arrow = this.Vdraw_arrow( t.dataset[0].col_labels[2] );
+               var hrz_arrow = this.Hdraw_arrow( t.dataset[0].col_labels[0] );
                break;
-      case 2 : var bigcircle = make_bigcircle( t.max[1], t.max[2] );
-               var ver_arrow = Vdraw_arrow( t.dataset[0].col_labels[2] );
-               var hrz_arrow = Hdraw_arrow( t.dataset[0].col_labels[1] );
+      case 2 : var bigcircle = this.make_bigcircle( t.max[1], t.max[2] );
+               var ver_arrow = this.Vdraw_arrow( t.dataset[0].col_labels[2] );
+               var hrz_arrow = this.Hdraw_arrow( t.dataset[0].col_labels[1] );
                break;
       default: ;
 
@@ -219,16 +220,19 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
 
       var x,y;
       switch (zoneKey)  {
-        case 0 : if (Math.abs(l1-zoneHeight)<0.000001)  {
-                    var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    var x2 = ( ((t.c1[t.V_val]*t.c2[t.V_val]) - t.c3[t.V_val])*k1 )/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    var x3 = ( ((t.c3[t.V_val]*t.c1[t.V_val]) - t.c2[t.V_val])*l1 )/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    x = x1 + x2 + x3;
+        case 0 : //if (Math.abs(l1-Math.abs(zoneHeight))<0.000001)  {
+                    x = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val])) +
+                        ( ((t.c1[t.V_val]*t.c2[t.V_val]) - t.c3[t.V_val])*k1 )/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val])) +
+                        ( ((t.c3[t.V_val]*t.c1[t.V_val]) - t.c2[t.V_val])*l1 )/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    //x = x1 + x2 + x3;
                     y = k1/(t.s1[t.V_val]*t.u2[t.V_val]) - (t.c1[t.V_val]*l1)/(t.s1[t.V_val]*t.u3[t.V_val]);
-                    make_each_dot ( x,y,V,maxV );
-                 }
-                 if (Math.abs(l1+zoneHeight)<0.000001)
-                    make_each_dot ( -x,-y,V,maxV );
+                    x *= t.lowreso;
+                    y *= t.lowreso;
+                    if (Math.abs(l1-zoneHeight)<0.000001)
+                      this.make_each_dot ( x,y,V,maxV );
+                    if (Math.abs(l1+zoneHeight)<0.000001)
+                       this.make_each_dot ( -x,-y,V,maxV );
+                 //}
                  break;
         case 1 : if (Math.abs(k1-zoneHeight)<0.000001)  {
                     var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
@@ -236,10 +240,10 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
                     var x3 = ((t.c3[t.V_val]*t.c1[t.V_val] - t.c2[t.V_val])*l1)/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     x = x1 + x2 + x3;
                     y = -(t.c1[t.V_val]*k1)/(t.s1[t.V_val]*t.u2[t.V_val]) + l1/(t.s1[t.V_val]*t.u3[t.V_val]);
-                    make_each_dot ( x,y,V,maxV );
+                    this.make_each_dot ( x,y,V,maxV );
                  }
                  if (Math.abs(k1+zoneHeight)<0.000001)
-                    make_each_dot ( -x,-y,V,maxV );
+                    this.make_each_dot ( -x,-y,V,maxV );
                  break;
         case 2 : if (Math.abs(h1-zoneHeight)<0.000001)  {
                     var x1 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*h1)/(t.s2[t.V_val]*t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
@@ -247,10 +251,10 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
                     var x3 = ((t.c3[t.V_val]*t.c2[t.V_val] - t.c1[t.V_val])*l1)/(t.s2[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     x = x1 + x2 + x3;
                     y = -(t.c2[t.V_val]*h1)/(t.s2[t.V_val]*t.u1[t.V_val]) + l1/(t.s2[t.V_val]*t.u3[t.V_val]);
-                    make_each_dot ( x,y,V,maxV );
+                    this.make_each_dot ( x,y,V,maxV );
                  }
                  if (Math.abs(h1+zoneHeight)<0.000001)
-                    make_each_dot ( -x,-y,V,maxV );
+                    this.make_each_dot ( -x,-y,V,maxV );
                  break;
         default: ;
       }
@@ -289,7 +293,7 @@ jsViewHKL.prototype.makeTab4 = function ()  {
 
 
 
-    make_bigcircle();
+    //make_bigcircle();
 
     //alert('Sep = '+ sep);
 
@@ -331,13 +335,13 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     this.zonekey   = 0;
 
     (function(t){
-        draw_all_spots ( t, 0, 0);
+        t.draw_all_spots ( t, 0, 0);
 
         $(window).resize(function() {
         //alert ( 'canvas.height = ' + canvas.height )
         canvas.height = $(window).height() - 100;
         canvas.width  = $(window).width () - 100;
-        draw_all_spots(t, t.zonekey, t.zonelevel);
+        t.draw_all_spots(t, t.zonekey, t.zonelevel);
         });
 
         $( t.V_select ).selectmenu({
@@ -346,36 +350,36 @@ jsViewHKL.prototype.makeTab4 = function ()  {
                 var maxV = t.max[t.V_val];
                 t.zonelevel = 0;
                 $(spinner).spinner( 'value', 0 );
-                draw_all_spots(t,t.zonekey, t.zonelevel);
+                t.draw_all_spots(t,t.zonekey, t.zonelevel);
             }
         });
         $(spinner).spinner ({
             step: 1,
             spin: function( event, ui )  {
                 t.zonelevel = ui.value;
-                draw_all_spots(t, t.zonekey, t.zonelevel);
+                t.draw_all_spots(t, t.zonekey, t.zonelevel);
             }
         });
         $("#zonelevel_spinner").keypress(function (e) {
            if (e.keyCode == 13) {
              var val = $("#zonelevel_spinner").spinner( "value" );
              t.zonelevel = val;
-             draw_all_spots(t, t.zonekey, t.zonelevel);
+             t.draw_all_spots(t, t.zonekey, t.zonelevel);
            }
         });
 
         $('#radio-1').click(function()  {
             t.zonekey = 0;
-            draw_all_spots(t, t.zonekey, t.zonelevel);
+            t.draw_all_spots(t, t.zonekey, t.zonelevel);
 
         });
         $('#radio-2').click(function(){
             t.zonekey = 1;
-            draw_all_spots(t, t.zonekey, t.zonelevel);
+            t.draw_all_spots(t, t.zonekey, t.zonelevel);
         });
         $('#radio-3').click(function(){
             t.zonekey = 2;
-            draw_all_spots(t, t.zonekey, t.zonelevel);
+            t.draw_all_spots(t, t.zonekey, t.zonelevel);
         });
     }(this))
 }
