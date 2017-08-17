@@ -26,27 +26,30 @@ function make_bigcircle ( Hmax_data, Vmax_data )  {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    this.Hsep = 300/Hmax_data;
-    this.Vsep = 300/Vmax_data;
+    this.big_rad = (Math.min(canvas.height, canvas.width)/2)-50;
+
+    this.Hsep = big_rad/Hmax_data;
+    this.Vsep = big_rad/Vmax_data;
     ctx.beginPath();
-    ctx.arc(350,325,310,0, Math.PI*2, 1);
+    ctx.arc((canvas.width-100)/2,(canvas.height)/2,big_rad,0, Math.PI*2, 1);
     ctx.stroke();
     ctx.closePath();
 }
 
 function Hdraw_arrow ( col_labels )  {
+    var buffer = 100;
     var canvas = document.getElementById('hklzone');
     var ctx = canvas.getContext('2d');
     ctx.lineWidth = 4;
-    var linestart_x = 0;
-    var linestart_y = 325;
-    var lineend_x = 675;
+    var linestart_x = (canvas.width-100)/2 - this.big_rad - buffer;
+    var linestart_y = (canvas.height)/2;
+    var lineend_x = (canvas.width-100)/2 + this.big_rad + buffer -15;;
     var lineend_y = linestart_y;
 
     ctx.beginPath();
     ctx.font = '25px arial';
     ctx.fillStyle   = 'rgba(250, 0, 0, 0.75)';
-    ctx.fillText(col_labels, 670, 308);
+    ctx.fillText(col_labels, (canvas.width-100)/2 + this.big_rad + buffer +5, ((canvas.height)/2 - 10));
     ctx.closePath();
 
     ctx.beginPath();
@@ -72,15 +75,15 @@ function Hdraw_arrow ( col_labels )  {
       var ctx = canvas.getContext('2d');
       ctx.lineWidth = 4;
 
-      var linestart_x = 350;
-      var linestart_y = 650;
+      var linestart_x = (canvas.width-100)/2;
+      var linestart_y = (canvas.height);
       var lineend_y = 15;
       var lineend_x = linestart_x;
 
       ctx.beginPath();
       ctx.fillStyle   = 'rgba(250, 0, 0, 0.75)';
       ctx.font = '25px arial';
-      ctx.fillText(col_labels, 360, 20);
+      ctx.fillText(col_labels, ((canvas.width-100)/2 + 10), 20);
       ctx.closePath();
 
       ctx.beginPath();
@@ -122,8 +125,8 @@ function erf(x){
       var canvas = document.getElementById('hklzone');
       var ctx = canvas.getContext('2d');
       maxRad = (this.Hsep+this.Vsep)/5.0;
-      var x = 350+(hval*this.Hsep);
-      var y = 325-(vval*this.Vsep);
+      var x = ((canvas.width-100)/2)+(hval*this.Hsep);
+      var y = (canvas.height/2)-(vval*this.Vsep);
 
       ithresh   = 1.0;
       vcontrast = 0.5;
@@ -218,53 +221,39 @@ function draw_all_spots ( t,zoneKey,zoneHeight )  {
       switch (zoneKey)  {
         case 0 : if (Math.abs(l1-zoneHeight)<0.000001)  {
                     var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    var x2 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*k1)/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    var x3 = ((t.c3[t.V_val]*t.c1[t.V_val] - t.c2[t.V_val])*l1)/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x2 = ( ((t.c1[t.V_val]*t.c2[t.V_val]) - t.c3[t.V_val])*k1 )/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
+                    var x3 = ( ((t.c3[t.V_val]*t.c1[t.V_val]) - t.c2[t.V_val])*l1 )/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     x = x1 + x2 + x3;
                     y = k1/(t.s1[t.V_val]*t.u2[t.V_val]) - (t.c1[t.V_val]*l1)/(t.s1[t.V_val]*t.u3[t.V_val]);
-                    //alert ('x = ' + x);
                     make_each_dot ( x,y,V,maxV );
                  }
-                   //make_each_dot ( h1,k1,V,maxV );
-                break;
+                 if (Math.abs(l1+zoneHeight)<0.000001)
+                    make_each_dot ( -x,-y,V,maxV );
+                 break;
         case 1 : if (Math.abs(k1-zoneHeight)<0.000001)  {
                     var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x2 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*k1)/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x3 = ((t.c3[t.V_val]*t.c1[t.V_val] - t.c2[t.V_val])*l1)/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     x = x1 + x2 + x3;
                     y = -(t.c1[t.V_val]*k1)/(t.s1[t.V_val]*t.u2[t.V_val]) + l1/(t.s1[t.V_val]*t.u3[t.V_val]);
+                    make_each_dot ( x,y,V,maxV );
                  }
-                 make_each_dot ( x,y,V,maxV );
-                   //make_each_dot ( h1,l1,V,maxV );
-                break;
+                 if (Math.abs(k1+zoneHeight)<0.000001)
+                    make_each_dot ( -x,-y,V,maxV );
+                 break;
         case 2 : if (Math.abs(h1-zoneHeight)<0.000001)  {
                     var x1 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*h1)/(t.s2[t.V_val]*t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x2 = (t.s2[t.V_val]*k1)/(t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x3 = ((t.c3[t.V_val]*t.c2[t.V_val] - t.c1[t.V_val])*l1)/(t.s2[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     x = x1 + x2 + x3;
                     y = -(t.c2[t.V_val]*h1)/(t.s2[t.V_val]*t.u1[t.V_val]) + l1/(t.s2[t.V_val]*t.u3[t.V_val]);
+                    make_each_dot ( x,y,V,maxV );
                  }
-                 make_each_dot ( x,y,V,maxV );
-                   //make_each_dot ( k1,l1,V,maxV );
-                break;
+                 if (Math.abs(h1+zoneHeight)<0.000001)
+                    make_each_dot ( -x,-y,V,maxV );
+                 break;
         default: ;
       }
-
-/*
-      switch (zoneKey)  {
-        case 0 : if (Math.abs(l1-zoneHeight)<0.000001||Math.abs(l1+zoneHeight)<0.000001)
-                   make_each_dot ( h1,k1,V,maxV );
-                break;
-        case 1 : if (Math.abs(k1-zoneHeight)<0.000001||Math.abs(k1+zoneHeight)<0.000001)
-                   make_each_dot ( h1,l1,V,maxV );
-                break;
-        case 2 : if (Math.abs(h1-zoneHeight)<0.000001||Math.abs(h1+zoneHeight)<0.000001)
-                   make_each_dot ( k1,l1,V,maxV );
-                break;
-        default: ;
-      }
-*/
-
     }
   }
 }
@@ -288,14 +277,17 @@ function make_fieldset_table (td1,td2,td3)  {
 
 jsViewHKL.prototype.makeTab4 = function ()  {
     var tab4 = document.getElementById ( "tab4" );
-    tab4.innerHTML ='<canvas id="hklzone" width="700" height="700">'+
-    'Use a compatible browser</canvas><br>';
+    var canvas = document.createElement( 'canvas' );
+    var w = $(window).width();
+    var h = $(window).height() - 150;
+    //var canvas_size = Math.min(w,h);
+    canvas.setAttribute ('width', w);
+    canvas.setAttribute ('height', h);
 
-    /*
-    var w = $(window).width ();
-    var h = $(window).height();
-    var canvas_size = Math.min (w,h) - 200;
-    */
+    canvas.setAttribute ('id', 'hklzone' );
+    tab4.appendChild(canvas);
+
+
 
     make_bigcircle();
 
@@ -341,12 +333,20 @@ jsViewHKL.prototype.makeTab4 = function ()  {
     (function(t){
         draw_all_spots ( t, 0, 0);
 
+        $(window).resize(function() {
+        //alert ( 'canvas.height = ' + canvas.height )
+        canvas.height = $(window).height() - 100;
+        canvas.width  = $(window).width () - 100;
+        draw_all_spots(t, t.zonekey, t.zonelevel);
+        });
+
         $( t.V_select ).selectmenu({
             select: function(event,ui)  {
                 t.V_val = 2+ parseInt(ui.item.value);
                 var maxV = t.max[t.V_val];
+                t.zonelevel = 0;
                 $(spinner).spinner( 'value', 0 );
-                draw_all_spots(t,t.zonekey, 0);
+                draw_all_spots(t,t.zonekey, t.zonelevel);
             }
         });
         $(spinner).spinner ({
