@@ -10,7 +10,7 @@
  *  **** Content :  functions to make fourth tab (HKL zone)
  *       ~~~~~~~~~
  *
- *  **** Author  :  Junho Choi
+ *  **** Author  :  Junho Choi (Eton College, Eton)
  *       ~~~~~~~~~
  *
  *  =================================================================

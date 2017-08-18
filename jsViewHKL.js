@@ -12,7 +12,7 @@
  *                  this data.
  *
  *
- *  **** Author  :  Junho Choi
+ *  **** Author  :  Junho Choi (Eton College, Eton)
  *       ~~~~~~~~~
  *
  *  =================================================================

@@ -11,7 +11,7 @@
  *       ~~~~~~~~~  general layout of tabs
  *
  *
- *  **** Author  :  Junho Choi
+ *  **** Author  :  Junho Choi (Eton College, Eton)
  *       ~~~~~~~~~
  *
  *  =================================================================

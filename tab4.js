@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    16.08.17   <--  Date of Last Modification.
+ *    18.08.17   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -184,17 +184,18 @@ jsViewHKL.prototype.add_options =  function () {
 // function to draw all spots
 jsViewHKL.prototype.draw_all_spots = function ( t,zoneKey,zoneHeight )  {
   var maxV = t.max[t.V_val];
+  var bigcircle = this.make_bigcircle( t.lowreso, t.lowreso );
   switch (zoneKey) {
       case 0 : //var bigcircle = make_bigcircle( t.max[0], t.max[1] );
-               var bigcircle = this.make_bigcircle( t.lowreso, t.lowreso );
+               //var bigcircle = this.make_bigcircle( t.lowreso, t.lowreso );
                var ver_arrow = this.Vdraw_arrow( t.dataset[0].col_labels[1] );
                var hrz_arrow = this.Hdraw_arrow( t.dataset[0].col_labels[0] );
                break;
-      case 1 : var bigcircle = this.make_bigcircle( t.max[0], t.max[2] );
+      case 1 : //var bigcircle = this.make_bigcircle( t.max[0], t.max[2] );
                var ver_arrow = this.Vdraw_arrow( t.dataset[0].col_labels[2] );
                var hrz_arrow = this.Hdraw_arrow( t.dataset[0].col_labels[0] );
                break;
-      case 2 : var bigcircle = this.make_bigcircle( t.max[1], t.max[2] );
+      case 2 : //var bigcircle = this.make_bigcircle( t.max[1], t.max[2] );
                var ver_arrow = this.Vdraw_arrow( t.dataset[0].col_labels[2] );
                var hrz_arrow = this.Hdraw_arrow( t.dataset[0].col_labels[1] );
                break;
@@ -234,27 +235,31 @@ jsViewHKL.prototype.draw_all_spots = function ( t,zoneKey,zoneHeight )  {
                        this.make_each_dot ( -x,-y,V,maxV );
                  //}
                  break;
-        case 1 : if (Math.abs(k1-zoneHeight)<0.000001)  {
+        case 1 : //if (Math.abs(k1-zoneHeight)<0.000001)  {
                     var x1 = (t.s1[t.V_val]*h1)/(t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x2 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*k1)/(t.s1[t.V_val]*t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x3 = ((t.c3[t.V_val]*t.c1[t.V_val] - t.c2[t.V_val])*l1)/(t.s1[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    x = x1 + x2 + x3;
+                    x = (x1 + x2 + x3)*t.lowreso;
                     y = -(t.c1[t.V_val]*k1)/(t.s1[t.V_val]*t.u2[t.V_val]) + l1/(t.s1[t.V_val]*t.u3[t.V_val]);
-                    this.make_each_dot ( x,y,V,maxV );
-                 }
-                 if (Math.abs(k1+zoneHeight)<0.000001)
-                    this.make_each_dot ( -x,-y,V,maxV );
+                    y *= t.lowreso;
+                    if (Math.abs(k1-zoneHeight)<0.000001)
+                      this.make_each_dot ( x,y,V,maxV );
+                    if (Math.abs(k1+zoneHeight)<0.000001)
+                       this.make_each_dot ( -x,-y,V,maxV );
+                 //}
                  break;
-        case 2 : if (Math.abs(h1-zoneHeight)<0.000001)  {
+        case 2 : //if (Math.abs(h1-zoneHeight)<0.000001)  {
                     var x1 = ((t.c1[t.V_val]*t.c2[t.V_val] - t.c3[t.V_val])*h1)/(t.s2[t.V_val]*t.u1[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x2 = (t.s2[t.V_val]*k1)/(t.u2[t.V_val]*Math.sqrt(t.omega[t.V_val]));
                     var x3 = ((t.c3[t.V_val]*t.c2[t.V_val] - t.c1[t.V_val])*l1)/(t.s2[t.V_val]*t.u3[t.V_val]*Math.sqrt(t.omega[t.V_val]));
-                    x = x1 + x2 + x3;
+                    x = (x1 + x2 + x3)*t.lowreso;
                     y = -(t.c2[t.V_val]*h1)/(t.s2[t.V_val]*t.u1[t.V_val]) + l1/(t.s2[t.V_val]*t.u3[t.V_val]);
-                    this.make_each_dot ( x,y,V,maxV );
-                 }
-                 if (Math.abs(h1+zoneHeight)<0.000001)
-                    this.make_each_dot ( -x,-y,V,maxV );
+                    y *= t.lowreso;
+                    if (Math.abs(h1-zoneHeight)<0.000001)
+                      this.make_each_dot ( x,y,V,maxV );
+                    if (Math.abs(h1+zoneHeight)<0.000001)
+                       this.make_each_dot ( -x,-y,V,maxV );
+                 //}
                  break;
         default: ;
       }
